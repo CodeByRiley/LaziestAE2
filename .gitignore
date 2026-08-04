@@ -1,0 +1,44 @@
+# --- build output ---
+.gradle/
+build/
+out/
+bin/
+classes/
+libs/
+
+# ForgeGradle dev environment
+run/
+
+# --- IDEs ---
+# eclipse
+*.launch
+.settings/
+.classpath
+.project
+eclipse/
+
+# intellij
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+.vscode/
+
+# --- tooling ---
+.claude/
+
+# --- os ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- jvm / logs ---
+*.log
+hs_err_pid*
+replay_pid*
+.attach_pid*
+
+# Note: gradle/wrapper/gradle-wrapper.jar is intentionally committed, so do not
+# add a blanket *.jar rule above.

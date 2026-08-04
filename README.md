@@ -1,0 +1,93 @@
+# Laziest AE2
+
+Source code is licensed under the MIT license in LICENSE. <br>
+Textures in assets/ are licensed by E. Geng (2020) under assets/LICENSE.
+
+A Minecraft **1.7.10** backport of [Lazy AE2](https://github.com/phantamanta44/Lazy-AE2) by phantamanta44,
+which targets 1.12.2. <br> Adds machines that automate the tedious parts of Applied Energistics 2.
+
+Requires **Applied Energistics 2** (rv3 for 1.7.10). NEI and MineTweaker are optional.
+
+
+## Machines
+
+| Machine | What it does |
+| --- | --- |
+| **Fluix Aggregator** | Combines three ingredients into one output; automates in-world fluix crafting. |
+| **Pulse Centrifuge** | Purifies crystals without water or waiting. Also grinds sky stone, ender pearls and wheat. |
+| **ME Circuit Etcher** | Prints processors without inscriber presses. Takes redstone, silicon and a core material. |
+| **Crystal Energizer** | Charges certus quartz faster than a charger. Energy cost comes from the recipe. |
+| **Preemptive Assembly Unit** | Holds patterns and pushes their ingredients into an adjacent crafter, a whole batch at a time. |
+| **ME Level Maintainer** | Keeps items stocked in the network, with a target quantity and batch size per line. |
+| **Mass Assembly Chamber** | Multiblock crafting provider that accepts jobs in bulk and works through them using network power. |
+
+The four processing machines accept AE2 **acceleration cards** (up to 8), trading energy for speed,
+and have per-face IO configuration plus an auto-export toggle.
+
+### Mass Assembly Chamber
+
+Any face-connected group of assembler blocks forms a structure, up to 256 blocks. It needs
+exactly one Controller plus at least one Frame, Pattern Provider, Crafting Coprocessor and IO Port.
+Vents are decorative.
+
+Every block carries a grid node, so an ME cable may attach anywhere on the structure; the whole
+cluster counts as a single channel. Throughput scales with coprocessor count, at proportionally
+worse energy efficiency.
+
+It is a crafting *provider*, not a crafting CPU — the network still needs a real Crafting CPU to
+plan jobs.
+
+### Preemptive Assembly Unit
+
+Replaces an ME Interface in front of a machine that crafts from an item inventory:
+
+```
+Crafting CPU  ->  PAU (stages ingredients)  ->  adjacent crafter  ->  results piped back
+                                                                  ->  PAU import buffer  ->  ME network
+```
+
+Put a crafter, such as a Molecular Assembler, against a face set to OUTPUT or OMNI. If ingredients
+cannot be delivered anywhere, they are returned to the network so the job can be reissued.
+
+## Integration
+
+**NEI** — recipe and usage screens for the four processing machines. Hover a machine and press
+R or U to see its recipes. Clicking the progress arrow in a machine GUI opens the same screens.
+
+**MineTweaker** — recipes can be added or removed from scripts:
+
+```zenscript
+mods.laziestae2.Aggregator.addRecipe(<threng:material>, <ore:dustCoal>, <ore:dustFluix>, <ore:ingotIron>);
+mods.laziestae2.Aggregator.removeRecipe(<appliedenergistics2:material:7>);
+
+mods.laziestae2.Centrifuge.addRecipe(<output>, <input>);
+mods.laziestae2.Etcher.addRecipe(<output>, <middle>);                  // default redstone + silicon
+mods.laziestae2.Etcher.addRecipe(<output>, <top>, <bottom>, <middle>); // full positional form
+mods.laziestae2.Energizer.addRecipe(<output>, <input>, 12000);
+```
+
+Every machine also has a `removeRecipe(IIngredient)` method.
+
+## Configuration
+
+`config/laziestae2.cfg` covers energy buffers, work rates, upgrade scaling, the job queue size, and:
+
+- `general.networkTransferPerTick` — maximum AE a machine draws from the network per tick. **0 means no limit.**
+- `machines.fast_crafter.preemptiveBatching` — whether the assembly unit pulls a whole batch of
+  ingredients ahead of time. This reaches into AE2 internals; disable it if a future AE2 build changes them.
+
+## Building
+
+```bash
+./gradlew build
+```
+
+Output lands in `build/libs`. Close any running client first — it locks the jar.
+
+Uses [anatawa12's ForgeGradle 1.2 fork](https://github.com/anatawa12/ForgeGradle-1.2), so Gradle 4.4.1+
+works. Dependency versions live in `gradle.properties`.
+
+## Credits
+
+Original mod, textures and design by **phantamanta44**. This is an independent backport; please
+direct issues with the 1.12.2 version upstream.

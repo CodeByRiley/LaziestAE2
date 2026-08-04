@@ -1,0 +1,124 @@
+itemGroup.laziestae2=Laziest AE2
+
+item.laziestae2.material.fluix_steel.name=Fluix Steel Ingot
+item.laziestae2.material.steel_process_dust.name=Carbonic Fluix Complex
+item.laziestae2.material.steel_process_ingot.name=Fluix-Plated Iron Ingot
+item.laziestae2.material.coal_dust.name=Coal Dust
+item.laziestae2.material.machine_core.name=Fluix Logic Unit
+item.laziestae2.material.space_gem.name=Resonating Crystal
+item.laziestae2.material.parallel_processor.name=Massively Parallel Processor
+item.laziestae2.material.spec_core.name=Speculation Core (1x)
+item.laziestae2.material.spec_core_2.name=Speculation Core (2x)
+item.laziestae2.material.spec_core_4.name=Speculation Core (4x)
+item.laziestae2.material.spec_core_8.name=Speculation Core (8x)
+item.laziestae2.material.spec_core_16.name=Speculation Core (16x)
+item.laziestae2.material.spec_core_32.name=Speculation Core (32x)
+item.laziestae2.material.spec_core_64.name=Speculation Core (64x)
+item.laziestae2.material.spec_processor.name=Speculative Processor
+
+tile.laziestae2.machine.aggregator.name=Fluix Aggregator
+tile.laziestae2.machine.centrifuge.name=Pulse Centrifuge
+tile.laziestae2.machine.etcher.name=ME Circuit Etcher
+tile.laziestae2.machine.fast_crafter.name=Preemptive Assembly Unit
+tile.laziestae2.machine.level_maintainer.name=ME Level Maintainer
+tile.laziestae2.machine.energizer.name=Crystal Energizer
+tile.laziestae2.big_assembler.frame.name=Mass Assembler Frame
+tile.laziestae2.big_assembler.vent.name=Mass Assembler Vent
+tile.laziestae2.big_assembler.controller.name=Mass Assembler Controller
+tile.laziestae2.big_assembler.module_pattern.name=MA Pattern Provider
+tile.laziestae2.big_assembler.module_cpu.name=MA Crafting Coprocessor
+tile.laziestae2.big_assembler.io_port.name=Mass Assembler IO Port
+
+tile.laziestae2.machine.aggregator.tooltip=Automates in-world fluix crystal crafting.
+tile.laziestae2.machine.aggregator.tooltip.2=Combines three ingredients into one output.
+tile.laziestae2.machine.aggregator.tooltip.3=Accepts acceleration cards.
+tile.laziestae2.machine.centrifuge.tooltip=Purifies crystals without water or waiting.
+tile.laziestae2.machine.centrifuge.tooltip.2=Also grinds sky stone, ender pearls and wheat.
+tile.laziestae2.machine.centrifuge.tooltip.3=Accepts acceleration cards.
+tile.laziestae2.machine.etcher.tooltip=Prints processors without inscriber presses.
+tile.laziestae2.machine.etcher.tooltip.2=Takes redstone, silicon and a core material.
+tile.laziestae2.machine.etcher.tooltip.3=Accepts acceleration cards.
+tile.laziestae2.machine.energizer.tooltip=Charges certus quartz faster than a charger.
+tile.laziestae2.machine.energizer.tooltip.2=Energy cost is set by the recipe.
+tile.laziestae2.machine.energizer.tooltip.3=Accepts acceleration cards.
+tile.laziestae2.machine.fast_crafter.tooltip=Feeds a crafting machine from the ME network.
+tile.laziestae2.machine.fast_crafter.tooltip.2=Holds patterns and pushes their ingredients
+tile.laziestae2.machine.fast_crafter.tooltip.3=into inventories on faces set to output,
+tile.laziestae2.machine.fast_crafter.tooltip.4=grabbing a whole batch at once where it can.
+tile.laziestae2.machine.fast_crafter.tooltip.5=Place a crafter, such as a Molecular Assembler,
+tile.laziestae2.machine.fast_crafter.tooltip.6=against an output face; pipe results back into
+tile.laziestae2.machine.fast_crafter.tooltip.7=the import buffer to return them to the network.
+tile.laziestae2.machine.fast_crafter.tooltip.8=Requires an ME channel.
+tile.laziestae2.machine.level_maintainer.tooltip=Keeps items stocked in the ME network.
+tile.laziestae2.machine.level_maintainer.tooltip.2=Set a target quantity and batch size per row.
+tile.laziestae2.machine.level_maintainer.tooltip.3=Requires an ME channel and a crafting CPU.
+
+tile.laziestae2.big_assembler.controller.tooltip=Core of the Mass Assembly Chamber.
+tile.laziestae2.big_assembler.controller.tooltip.2=Accepts crafting jobs in bulk and works
+tile.laziestae2.big_assembler.controller.tooltip.3=through them using network power.
+tile.laziestae2.big_assembler.controller.tooltip.4=Requires an ME channel.
+tile.laziestae2.big_assembler.frame.tooltip=Structural block for the Mass Assembly Chamber.
+tile.laziestae2.big_assembler.vent.tooltip=Decorative casing for the Mass Assembly Chamber.
+tile.laziestae2.big_assembler.module_pattern.tooltip=Holds up to 36 crafting patterns for the
+tile.laziestae2.big_assembler.module_pattern.tooltip.2=Mass Assembly Chamber. Right-click to open.
+tile.laziestae2.big_assembler.module_cpu.tooltip=Increases assembly speed, at the cost of
+tile.laziestae2.big_assembler.module_cpu.tooltip.2=more energy per unit of work.
+tile.laziestae2.big_assembler.io_port.tooltip=Pattern access for the Mass Assembly Chamber.
+tile.laziestae2.big_assembler.io_port.tooltip.2=Hoppers and pipes can insert or extract
+tile.laziestae2.big_assembler.io_port.tooltip.3=encoded patterns through it.
+tile.laziestae2.big_assembler.io_port.tooltip.4=Accepts patterns only, not crafting ingredients.
+tile.laziestae2.big_assembler.io_port.tooltip.5=Required for the structure to form.
+
+#item.laziestae2.material.fluix_steel.tooltip=Crafting material for Laziest AE2 machines.
+#item.laziestae2.material.steel_process_dust.tooltip=Inscriber press for making Fluix-Plated Iron.
+#item.laziestae2.material.steel_process_ingot.tooltip=Smelt to obtain a Fluix Steel Ingot.
+#item.laziestae2.material.machine_core.tooltip=Core component of every machine.
+#item.laziestae2.material.space_gem.tooltip=Etch into a Massively Parallel Processor.
+#item.laziestae2.material.parallel_processor.tooltip=Used to build advanced machines.
+#item.laziestae2.material.spec_processor.tooltip=The most advanced processor available.
+
+container.laziestae2.aggregator=Fluix Aggregator
+container.laziestae2.centrifuge=Pulse Centrifuge
+container.laziestae2.etcher=ME Circuit Etcher
+container.laziestae2.fast_crafter=Preemptive Assembly Unit
+container.laziestae2.level_maintainer=ME Level Maintainer
+container.laziestae2.energizer=Crystal Energizer
+container.laziestae2.big_assembler=Mass Assembler
+container.laziestae2.big_assembler.formed=Structure: Formed
+container.laziestae2.big_assembler.incomplete=Structure: Incomplete
+container.laziestae2.big_assembler.too_large=Structure: Too Large
+container.laziestae2.big_assembler.parts=Parts: %d
+container.laziestae2.big_assembler.frames=Frames: %d
+container.laziestae2.big_assembler.vents=Vents: %d
+container.laziestae2.big_assembler.patterns=Pattern Modules: %d
+container.laziestae2.big_assembler.cpus=Crafting CPUs: %d
+container.laziestae2.big_assembler.io_ports=IO Ports: %d
+
+container.laziestae2.big_assembler.pattern_provider=MA Pattern Provider
+container.laziestae2.big_assembler.jobs=Jobs: %d
+container.laziestae2.big_assembler.work_rate=Work Rate: %d/t
+
+gui.laziestae2.search=Search...
+gui.laziestae2.page_first=First Page
+gui.laziestae2.page_prev=Previous Page
+gui.laziestae2.page_next=Next Page
+gui.laziestae2.page_last=Last Page
+
+
+gui.laziestae2.side_io.title=Configuration
+gui.laziestae2.side_io.none=No Access
+gui.laziestae2.side_io.input=Input
+gui.laziestae2.side_io.output=Output
+gui.laziestae2.side_io.omni=Input & Output
+gui.laziestae2.side.up=Top
+gui.laziestae2.side.down=Bottom
+gui.laziestae2.side.front=Front
+gui.laziestae2.side.back=Back
+gui.laziestae2.side.left=Left
+gui.laziestae2.side.right=Right
+gui.laziestae2.auto_export.on=Auto Export: On
+gui.laziestae2.auto_export.off=Auto Export: Off
+
+gui.laziestae2.level_maintainer.quantity=Target Quantity
+gui.laziestae2.level_maintainer.batch=Batch Size
+gui.laziestae2.energizer.energy=%,d AE
