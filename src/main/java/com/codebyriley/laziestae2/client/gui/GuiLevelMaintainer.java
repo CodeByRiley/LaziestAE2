@@ -36,7 +36,8 @@ public class GuiLevelMaintainer extends GuiContainer implements ISideIoGui {
             new net.minecraft.util.ResourceLocation(
                     com.codebyriley.laziestae2.Constants.MOD_ID, "textures/gui/component/submit.png");
 
-    // submit.png is 48x16: normal (0,0), disabled (16,0), hovered (32,0).
+    // submit.png is atlas of all button types
+    // normal at 0,0, disabled at 16,0, hovered at 32,0
     private static final int SUBMIT_TEX_WIDTH = 48;
     private static final int SUBMIT_TEX_HEIGHT = 16;
     private static final int SUBMIT_SIZE = 16;
@@ -130,7 +131,7 @@ public class GuiLevelMaintainer extends GuiContainer implements ISideIoGui {
             return true;
         }
 
-        // Digits only; let the field handle navigation/backspace itself.
+        // Digits only, let the field handle navigation/backspace itself.
         if (Character.isDigit(typedChar) || typedChar < ' ')
             field.textboxKeyTyped(typedChar, keyCode);
 

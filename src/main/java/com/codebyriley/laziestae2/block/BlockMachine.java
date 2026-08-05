@@ -160,7 +160,7 @@ public class BlockMachine extends Block implements IMetadataBlock {
         return sideIcon;
     }
 
-    /** In-world variant: swaps the front face to the lit texture while the machine runs. */
+    /** swaps the front face to the lit texture while the machine runs. */
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {

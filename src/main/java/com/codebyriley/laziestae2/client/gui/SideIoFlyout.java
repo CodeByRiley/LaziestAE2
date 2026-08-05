@@ -23,13 +23,13 @@ public class SideIoFlyout extends Gui {
     private static final int TITLE_HEIGHT = 12;
 
     /**
-     * Collapsed the tab is about the size of an inventory slot. The margin has to
-     * clear the panel frame, which is 2px of outline and bevel, or the pad drawn
-     * inside it overlaps the border.
+     * Collapsed the tab is the gear icon plus a margin wide enough to clear the
+     * panel frame, which is 2px of outline and bevel.
      */
-    private static final int COLLAPSED_MARGIN = 3;
-    private static final int COLLAPSED_WIDTH = SideIoWidget.SIZE + COLLAPSED_MARGIN * 2;
-    private static final int COLLAPSED_HEIGHT = SideIoWidget.SIZE + COLLAPSED_MARGIN * 2;
+    private static final int COLLAPSED_MARGIN = 4;
+    private static final int GEAR_SIZE = 16;
+    private static final int COLLAPSED_WIDTH = GEAR_SIZE + COLLAPSED_MARGIN * 2;
+    private static final int COLLAPSED_HEIGHT = GEAR_SIZE + COLLAPSED_MARGIN * 2;
 
     private static final int TEXT_COLOR = 0x404040;
 
@@ -41,8 +41,13 @@ public class SideIoFlyout extends Gui {
     private static final int PANEL_TILE = 6;
     private static final int PANEL_TEX_SIZE = 18;
 
+    /** Drawn over the collapsed panel, in place of the controls it hides. */
+    private static final net.minecraft.util.ResourceLocation GEAR_TEXTURE =
+            new net.minecraft.util.ResourceLocation(
+                    com.codebyriley.laziestae2.Constants.MOD_ID, "textures/gui/component/gear.png");
+
     /** Fraction of the open/close transition covered per frame. */
-    private static final float ANIMATION_STEP = 0.4F;
+    private static final float ANIMATION_STEP = 0.27F;
 
     /** How far the cursor must move while held before a click becomes a drag. */
     private static final int DRAG_THRESHOLD = 3;
@@ -55,6 +60,7 @@ public class SideIoFlyout extends Gui {
     private final int expandedWidth;
     private final int expandedHeight;
 
+
     /** Which edge the tab is attached to, and therefore which way it opens. */
     private enum Edge {
         LEFT, RIGHT, TOP, BOTTOM
@@ -66,9 +72,11 @@ public class SideIoFlyout extends Gui {
     private boolean open;
     private float progress;
 
+    private boolean toggledOpen;
     private boolean dragging;
     /** Mouse is held on the tab, but has not moved far enough to be a drag yet. */
     private boolean dragArmed;
+
     private int pressX;
     private int pressY;
     private int dragOffsetX;
@@ -77,6 +85,7 @@ public class SideIoFlyout extends Gui {
     public SideIoFlyout(SideIoWidget widget, String key, int anchorX, int anchorY) {
         this.widget = widget;
         this.key = key;
+        this.toggledOpen = false;
 
         int[] saved = POSITIONS.get(key);
         this.anchorX = saved != null ? saved[0] : anchorX;
@@ -135,8 +144,9 @@ public class SideIoFlyout extends Gui {
     public void update(int mouseX, int mouseY, int guiLeft, int guiTop) {
         widget.setMousePosition(mouseX, mouseY);
 
-        // While being dragged the tab stays collapsed, so it is easy to place.
-        open = !dragging && isOverTab(mouseX, mouseY, guiLeft, guiTop);
+        // Hovering peeks, clicking pins it open. While being dragged the tab stays
+        // collapsed, so it is easy to place.
+        open = !dragging && (toggledOpen || isOverTab(mouseX, mouseY, guiLeft, guiTop));
         progress = Math.max(0F, Math.min(1F, progress + (open ? ANIMATION_STEP : -ANIMATION_STEP)));
 
         if (isOpen()) {
@@ -188,13 +198,13 @@ public class SideIoFlyout extends Gui {
             layoutControls(guiLeft, guiTop);
             widget.draw(mc, guiLeft, guiTop);
         } else if (progress <= 0.01F) {
-            // Collapsed: the pad alone, at native size, doubles as the tab icon.
+            // show gear when collapsed
             GL11.glColor4f(1F, 1F, 1F, 1F);
-            widget.setScale(1F);
-            widget.setPosition(
-                    anchorX + COLLAPSED_MARGIN, anchorY + COLLAPSED_MARGIN,
-                    anchorX + COLLAPSED_MARGIN, anchorY + COLLAPSED_MARGIN);
-            widget.draw(mc, guiLeft, guiTop);
+            mc.getTextureManager().bindTexture(GEAR_TEXTURE);
+            func_146110_a(
+                    x + (width - GEAR_SIZE) / 2,
+                    y + (height - GEAR_SIZE) / 2,
+                    0F, 0F, GEAR_SIZE, GEAR_SIZE, GEAR_SIZE, GEAR_SIZE);
         }
 
         GL11.glEnable(GL11.GL_LIGHTING);
@@ -245,14 +255,14 @@ public class SideIoFlyout extends Gui {
 
     /** Tooltip lines for whatever the cursor is over, or null. */
     public List<String> getTooltip(int mouseX, int mouseY, int guiLeft, int guiTop) {
-        if (!isOpen()) {
-            if (isOverTab(mouseX, mouseY, guiLeft, guiTop)) {
-                return Collections.singletonList(
-                        StatCollector.translateToLocal("gui.laziestae2.side_io.title"));
-            }
-
-            return null;
-        }
+//        if (!isOpen()) {
+//            if (isOverTab(mouseX, mouseY, guiLeft, guiTop)) {
+//                return Collections.singletonList(
+//                        StatCollector.translateToLocal("gui.laziestae2.side_io.title"));
+//            }
+//
+//            return null;
+//        }
 
         int face = widget.getHoveredFace(mouseX, mouseY, guiLeft, guiTop);
         if (face >= 0)
@@ -308,9 +318,13 @@ public class SideIoFlyout extends Gui {
 
     /** On release the tab snaps flush against the nearest edge of the panel. */
     public void handleRelease(int guiWidth, int guiHeight) {
+        // A press that never became a drag was a click: it pins the panel open, or
+        // unpins it, and leaves the tab where it was.
+        if (dragArmed && !dragging)
+            toggledOpen = !toggledOpen;
+
         dragArmed = false;
 
-        // A press that never became a drag leaves the tab where it was.
         if (!dragging)
             return;
 

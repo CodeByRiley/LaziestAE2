@@ -17,8 +17,8 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
 
     private static final ResourceLocation ENERGY_TEXTURE = new ResourceLocation(Constants.MOD_ID, "textures/gui/component/energy.png");
 
-    // energy.png is 6x72: full-height track at (0,0,4,72), fill strip at
-    // (4,0,2,70) drawn bottom-up, inset 1px into the track.
+    // energy.png is 6x72: full-height track at 0,0,4,72, fill strip at
+    // 4,0,2,70 drawn bottom-up, inset 1px into the track.
     private static final int ENERGY_TEX_WIDTH = 6;
     private static final int ENERGY_TEX_HEIGHT = 72;
     private static final int ENERGY_BAR_X = 165;
@@ -111,7 +111,7 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
     private void drawEnergyBar(int left, int top) {
         mc.getTextureManager().bindTexture(ENERGY_TEXTURE);
 
-        // Track, always drawn at full size.
+        // fill track always drawn at full size.
         func_146110_a(
                 left + ENERGY_BAR_X,
                 top + ENERGY_BAR_Y,
@@ -122,7 +122,7 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
                 ENERGY_TEX_WIDTH,
                 ENERGY_TEX_HEIGHT);
 
-        // Fill, growing from the bottom.
+        // fill growing from the bottom.
         int filled = Math.round(container.getEnergyFraction() * ENERGY_FILL_HEIGHT);
         if (filled > 0) {
             int empty = ENERGY_FILL_HEIGHT - filled;
