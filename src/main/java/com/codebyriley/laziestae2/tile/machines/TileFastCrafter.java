@@ -1,6 +1,7 @@
 package com.codebyriley.laziestae2.tile.machines;
 
 import appeng.api.AEApi;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
@@ -533,7 +534,8 @@ public class TileFastCrafter extends TileNetworkDevice
     public boolean isUseableByPlayer(EntityPlayer player) {
         return worldObj != null
                 && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D
+                && hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override

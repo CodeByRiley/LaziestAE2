@@ -6,7 +6,7 @@ Textures in assets/ are licensed by E. Geng (2020) under assets/LICENSE.
 A Minecraft **1.7.10** backport of [Lazy AE2](https://github.com/phantamanta44/Lazy-AE2) by phantamanta44,
 which targets 1.12.2. <br> Adds machines that automate the tedious parts of Applied Energistics 2.
 
-Requires **Applied Energistics 2** (rv3 for 1.7.10). NEI and MineTweaker are optional.
+Requires **Applied Energistics 2** (rv3 for 1.7.10). NEI, MineTweaker and WDMla are optional.
 
 
 ## Machines
@@ -53,6 +53,24 @@ cannot be delivered anywhere, they are returned to the network so the job can be
 
 **NEI** — recipe and usage screens for the four processing machines. Hover a machine and press
 R or U to see its recipes. Clicking the progress arrow in a machine GUI opens the same screens.
+
+**WDMla / Waila** — in-world tooltips. Looking at a machine shows its progress, buffered AE and
+installed acceleration cards; the assembly unit shows its pattern count and whether ingredients
+are staged; the level maintainer shows how many rows it stocks; the Mass Assembly Chamber shows
+structure status, queue depth and the job it is working on.
+
+Asking for details adds the IO mode of the face being pointed at, the auto-export state, the
+level maintainer's per-row stock, and the chamber's part breakdown — which is also what makes a
+chamber part look up its controller, so the structure scan only runs on demand.
+
+[WDMla](https://github.com/GTNewHorizons/WDMla), the GTNewHorizons successor to Waila, is the
+preferred front end: it draws real progress bars and lets each provider be reordered or switched
+off individually. Plain [Waila](https://github.com/GTNewHorizons/waila) is supported as a
+fallback, with progress shown as a percentage and sneaking standing in for the details key.
+
+WDMla answers to the `Waila` mod id as well, and is told to ignore the legacy registration so
+nothing appears twice. If WDMla's `overrideWailaTooltips` option is turned off, both paths
+register and lines are duplicated — that is the option doing exactly what it says.
 
 **MineTweaker** — recipes can be added or removed from scripts:
 

@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 
 /** Client -> server machine IO configuration: cycle a face, or toggle auto-export. */
@@ -63,12 +64,14 @@ public class MessageMachineConfig implements IMessage {
                 return null;
             }
 
-            if (player.getDistanceSq((double)message.x + 0.5D, (double)message.y + 0.5D, (double)message.z + 0.5D) > 64D) {
+            TileEntity tile = player.worldObj.getTileEntity(message.x, message.y, message.z);
+            if (!(tile instanceof ISideConfigurable)) {
                 return null;
             }
 
-            TileEntity tile = player.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (!(tile instanceof ISideConfigurable)) {
+            // Covers reach and ME security in one check. Every side-configurable tile
+            // is also an inventory, which is where that check lives.
+            if (tile instanceof IInventory && !((IInventory)tile).isUseableByPlayer(player)) {
                 return null;
             }
 

@@ -119,6 +119,35 @@ gui.laziestae2.side.right=Right
 gui.laziestae2.auto_export.on=Auto Export: On
 gui.laziestae2.auto_export.off=Auto Export: Off
 
+tooltip.laziestae2.working=Working
+tooltip.laziestae2.working_percent=Working: %s
+tooltip.laziestae2.idle=Idle
+tooltip.laziestae2.ready=Ready
+tooltip.laziestae2.staging=Staging Ingredients
+tooltip.laziestae2.crafting=Crafting
+tooltip.laziestae2.unknown=?
+tooltip.laziestae2.on=On
+tooltip.laziestae2.off=Off
+tooltip.laziestae2.energy=Energy: %s / %s AE
+tooltip.laziestae2.cards=Acceleration Cards: %d / %d
+tooltip.laziestae2.no_channel=No ME Channel
+tooltip.laziestae2.face=%s: %s
+tooltip.laziestae2.auto_export=Auto Export: %s
+tooltip.laziestae2.patterns=Patterns: %d / %d
+tooltip.laziestae2.returning=Returning %d Stack(s)
+tooltip.laziestae2.lines=Stocking %d / %d Rows
+tooltip.laziestae2.line=%s: %s / %s
+tooltip.laziestae2.jobs=Jobs: %d / %d
+tooltip.laziestae2.job_progress=%s: %s
+tooltip.laziestae2.work_rate=Work Rate: %d/t
+tooltip.laziestae2.coprocessors=Coprocessors: %d
+
+provider.wdmla.laziestae2.machine=Laziest AE2 Machines
+provider.wdmla.laziestae2.fast.crafter=Preemptive Assembly Unit
+provider.wdmla.laziestae2.level.maintainer=ME Level Maintainer
+provider.wdmla.laziestae2.mass.assembler=Mass Assembly Chamber
+provider.wdmla.laziestae2.side.config=Laziest AE2 Face Configuration
+
 gui.laziestae2.level_maintainer.quantity=Target Quantity
 gui.laziestae2.level_maintainer.batch=Batch Size
 gui.laziestae2.energizer.energy=%,d AE

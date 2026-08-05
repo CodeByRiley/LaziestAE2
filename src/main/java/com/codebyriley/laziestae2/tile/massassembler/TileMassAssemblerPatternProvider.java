@@ -1,5 +1,6 @@
 package com.codebyriley.laziestae2.tile.massassembler;
 
+import appeng.api.config.SecurityPermissions;
 import appeng.api.implementations.ICraftingPatternItem;
 import appeng.api.networking.crafting.ICraftingMedium;
 import appeng.api.networking.crafting.ICraftingPatternDetails;
@@ -183,7 +184,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
     public boolean isUseableByPlayer(EntityPlayer player) {
         return worldObj != null
                 && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D
+                && hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override

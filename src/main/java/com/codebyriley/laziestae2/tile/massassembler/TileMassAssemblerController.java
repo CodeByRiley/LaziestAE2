@@ -3,6 +3,7 @@ package com.codebyriley.laziestae2.tile.massassembler;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -395,7 +396,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
     public boolean isUseableByPlayer(EntityPlayer player) {
         return worldObj != null
                 && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D
+                && hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override
@@ -556,7 +558,10 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         for (int[] pos : positions) {
             TileEntity tile = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
             if (tile instanceof TileMassAssemblerPart) {
-                ((TileMassAssemblerPart)tile).setActive(formedNow);
+                TileMassAssemblerPart part = (TileMassAssemblerPart)tile;
+                part.setActive(formedNow);
+                // Lets the part report structure state without scanning the cluster itself.
+                part.setControllerPosition(xCoord, yCoord, zCoord);
             }
         }
     }

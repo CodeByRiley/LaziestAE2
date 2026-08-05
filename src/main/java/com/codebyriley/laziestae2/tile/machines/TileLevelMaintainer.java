@@ -2,6 +2,7 @@ package com.codebyriley.laziestae2.tile.machines;
 
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
@@ -372,6 +373,16 @@ public class TileLevelMaintainer extends TileNetworkDevice
         return isRequestSlot(slot) && requestStacks[slot] != null;
     }
 
+    /** Last known network stock for a request line; -1 when it has not been read yet. */
+    public long getKnownCount(int slot) {
+        return isRequestSlot(slot) ? knownCounts[slot] : -1L;
+    }
+
+    /** Whether a crafting job is planned or running for a request line. */
+    public boolean isCrafting(int slot) {
+        return isRequestSlot(slot) && (links[slot] != null || pendingJobs[slot] != null);
+    }
+
     public void setRequest(int slot, ItemStack held) {
         if (!isRequestSlot(slot)) {
             return;
@@ -596,9 +607,13 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj != null
-                && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+        return worldObj != null &&
+                worldObj.getTileEntity(xCoord, yCoord, zCoord) == this &&
+                player.getDistanceSq(
+                        (double)xCoord + 0.5D,
+                        (double)yCoord + 0.5D,
+                        (double)zCoord + 0.5D) <= 64D &&
+                hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override

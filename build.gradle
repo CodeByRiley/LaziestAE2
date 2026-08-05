@@ -38,6 +38,7 @@ minecraft {
 }
 repositories {
     mavenLocal()
+    mavenCentral()
     maven {
         name = "CurseMaven"
         url = "https://cursemaven.com/"
@@ -64,6 +65,10 @@ repositories {
         url = "http://maven.cil.li/"
         allowInsecureProtocol = true
     }
+    maven {
+        name = "GTNH maven"
+        url = "https://nexus.gtnewhorizons.com/repository/public/"
+    }
 }
 
 
@@ -89,6 +94,21 @@ dependencies {
     compileOnly("MineTweaker3:ZenScript:${project.minetweaker_version}") {
         transitive = false
     }
+
+    // WDMla is the GTNewHorizons successor to Waila. The "api" artifact holds only
+    // com.gtnewhorizons.wdmla.api, so nothing else is pulled onto the compile path.
+    compileOnly("com.github.GTNewHorizons:WDMla:${project.wdmla_version}:api") {
+        transitive = false
+    }
+
+    // Legacy Waila API, for players who run Waila rather than WDMla. WDMla ships
+    // the same mcp.mobius.waila.api classes, so one artifact covers both at compile time.
+    compileOnly("com.github.GTNewHorizons:waila:${project.waila_version}:api") {
+        transitive = false
+    }
+
+    // The WDMla API signatures carry JetBrains nullability annotations.
+    compileOnly("org.jetbrains:annotations:${project.jetbrains_annotations_version}")
 }
 
 processResources {

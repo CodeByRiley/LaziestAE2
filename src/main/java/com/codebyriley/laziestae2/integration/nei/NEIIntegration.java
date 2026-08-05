@@ -6,13 +6,11 @@ public final class NEIIntegration {
 
     private static boolean initialized;
 
-    private NEIIntegration() {
-    }
+    private NEIIntegration() { }
 
     public static void init() {
-        if (initialized) {
+        if (initialized)
             return;
-        }
 
         API.registerNEIGuiHandler(new NEIGuiSpaceHandler());
 

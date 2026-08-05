@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
         name = Constants.NAME,
         version = Constants.VERSION,
         acceptedMinecraftVersions = "[1.7.10]",
-        dependencies = "required-after:appliedenergistics2;after:NotEnoughItems",
+        dependencies = "required-after:appliedenergistics2;after:NotEnoughItems;after:wdmla",
         guiFactory = "com.codebyriley.laziestae2.client.config.GuiFactory"
 )
 public class LaziestAE2 {

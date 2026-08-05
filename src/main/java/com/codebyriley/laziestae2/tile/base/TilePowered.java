@@ -3,13 +3,16 @@ package com.codebyriley.laziestae2.tile.base;
 import appeng.api.AEApi;
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
+import appeng.api.config.SecurityPermissions;
 import appeng.api.networking.IGrid;
 import appeng.api.networking.IGridNode;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.util.AECableType;
 import com.codebyriley.laziestae2.components.EnergyBuffer;
 import com.codebyriley.laziestae2.config.LaziestConfig;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -125,6 +128,30 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
 
     public boolean isGridConnected() {
         return gridNode != null && gridNode.isActive();
+    }
+
+    /**
+     * Whether a player may act on this device, according to the ME Security
+     * Terminal on the network it is attached to.
+     * <p>
+     * A network with no security terminal grants everything, and a device that is
+     * not on a network has nothing to protect, so both cases return true. Rights
+     * are resolved from server-side player data, and this is called from both
+     * sides, so the client always answers true and lets the server decide.
+     */
+    public boolean hasPermission(EntityPlayer player, SecurityPermissions permission) {
+        if (worldObj == null || worldObj.isRemote || player == null) {
+            return true;
+        }
+
+        IGridNode node = getActionableNode();
+        IGrid grid = node == null ? null : node.getGrid();
+        if (grid == null) {
+            return true;
+        }
+
+        ISecurityGrid security = grid.getCache(ISecurityGrid.class);
+        return security == null || security.hasPermission(player, permission);
     }
 
     @Override

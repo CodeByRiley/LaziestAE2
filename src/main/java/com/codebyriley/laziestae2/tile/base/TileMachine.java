@@ -1,5 +1,6 @@
 package com.codebyriley.laziestae2.tile.base;
 
+import appeng.api.config.SecurityPermissions;
 import com.codebyriley.laziestae2.gui.MachineGuiDefinition;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -356,9 +357,13 @@ public abstract class TileMachine extends TilePowered
 
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return worldObj != null
-                && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this
-                && player.getDistanceSq((double)xCoord + 0.5D, (double)yCoord + 0.5D, (double)zCoord + 0.5D) <= 64D;
+        return worldObj != null &&
+                worldObj.getTileEntity(xCoord, yCoord, zCoord) == this &&
+                player.getDistanceSq(
+                        (double) xCoord + 0.5D,
+                        (double) yCoord + 0.5D,
+                        (double) zCoord + 0.5D) <= 64D &&
+                hasPermission(player, SecurityPermissions.BUILD);
     }
 
     @Override

@@ -64,16 +64,18 @@ public class MessageLevelMaintainerRequest implements IMessage {
                 return null;
             }
 
-            if (player.getDistanceSq((double)message.x + 0.5D, (double)message.y + 0.5D, (double)message.z + 0.5D) > 64D) {
-                return null;
-            }
-
             TileEntity tile = player.worldObj.getTileEntity(message.x, message.y, message.z);
             if (!(tile instanceof TileLevelMaintainer)) {
                 return null;
             }
 
             TileLevelMaintainer maintainer = (TileLevelMaintainer)tile;
+
+            // Covers reach and ME security in one check, so a client that sends this
+            // packet without a legitimately open GUI gets nothing.
+            if (!maintainer.isUseableByPlayer(player)) {
+                return null;
+            }
             if (message.mode == MODE_QUANTITY) {
                 maintainer.setRequestQuantity(message.slot, message.value);
             } else if (message.mode == MODE_BATCH) {
