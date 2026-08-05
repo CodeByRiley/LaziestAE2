@@ -9,17 +9,14 @@ public class EnergizerRecipe {
     private final ItemStack output;
 
     public EnergizerRecipe(ItemStackMatcher input, int energyRequired, ItemStack output) {
-        if (input == null) {
+        if (input == null)
             throw new IllegalArgumentException("Energizer recipe input cannot be null");
-        }
 
-        if (energyRequired <= 0) {
+        if (energyRequired <= 0)
             throw new IllegalArgumentException("Energizer recipe energy must be positive");
-        }
 
-        if (output == null || output.stackSize <= 0) {
+        if (output == null || output.stackSize <= 0)
             throw new IllegalArgumentException("Energizer recipe output cannot be empty");
-        }
 
         this.input = input;
         this.energyRequired = energyRequired;

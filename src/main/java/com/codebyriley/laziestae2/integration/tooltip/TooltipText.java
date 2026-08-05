@@ -8,8 +8,7 @@ public final class TooltipText {
 
     private static final String KEY_PREFIX = "tooltip." + Constants.MOD_ID + ".";
 
-    private TooltipText() {
-    }
+    private TooltipText() { }
 
     public static String translate(String suffix) {
         return StatCollector.translateToLocal(KEY_PREFIX + suffix);

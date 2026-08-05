@@ -8,8 +8,7 @@ import minetweaker.MineTweakerAPI;
  */
 public final class MineTweakerIntegration {
 
-    private MineTweakerIntegration() {
-    }
+    private MineTweakerIntegration() { }
 
     public static void init() {
         MineTweakerAPI.registerClass(MTAggregator.class);

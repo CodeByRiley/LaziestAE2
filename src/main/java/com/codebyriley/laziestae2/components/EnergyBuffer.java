@@ -8,9 +8,8 @@ public final class EnergyBuffer {
     private final Runnable onChanged;
 
     public EnergyBuffer(double capacity, Runnable onChanged) {
-        if (Double.isNaN(capacity) || Double.isInfinite(capacity) || capacity < 0D) {
+        if (Double.isNaN(capacity) || Double.isInfinite(capacity) || capacity < 0D)
             throw new IllegalArgumentException("Energy capacity must be finite and non-negative");
-        }
 
         this.capacity = capacity;
         this.onChanged = onChanged;
@@ -42,45 +41,38 @@ public final class EnergyBuffer {
     }
 
     public double receive(double amount, boolean simulate) {
-        if (!isFiniteAmount(amount) || amount <= 0D) {
+        if (!isFiniteAmount(amount) || amount <= 0D)
             return 0D;
-        }
 
         double accepted = Math.min(amount, getRemainingCapacity());
 
-        if (!simulate && accepted > 0D) {
+        if (!simulate && accepted > 0D)
             setStored(stored + accepted);
-        }
 
         return accepted;
     }
 
     public double extract(double amount, boolean simulate) {
-        if (!isFiniteAmount(amount) || amount <= 0D) {
+        if (!isFiniteAmount(amount) || amount <= 0D)
             return 0D;
-        }
 
         double extracted = Math.min(amount, stored);
 
-        if (!simulate && extracted > 0D) {
+        if (!simulate && extracted > 0D)
             setStored(stored - extracted);
-        }
 
         return extracted;
     }
 
     public boolean consume(double amount, boolean simulate) {
-        if (!isFiniteAmount(amount) || amount < 0D) {
+        if (!isFiniteAmount(amount) || amount < 0D)
             return false;
-        }
 
-        if (stored < amount) {
+        if (stored < amount)
             return false;
-        }
 
-        if (!simulate) {
+        if (!simulate)
             setStored(stored - amount);
-        }
 
         return true;
     }
@@ -94,9 +86,8 @@ public final class EnergyBuffer {
     }
 
     private void notifyChanged() {
-        if (onChanged != null) {
+        if (onChanged != null)
             onChanged.run();
-        }
     }
 
     private static double clamp(double value, double min, double max) {
@@ -104,17 +95,14 @@ public final class EnergyBuffer {
     }
 
     private double clampToCapacity(double value) {
-        if (Double.isNaN(value)) {
+        if (Double.isNaN(value))
             return 0D;
-        }
 
-        if (value == Double.POSITIVE_INFINITY) {
+        if (value == Double.POSITIVE_INFINITY)
             return capacity;
-        }
 
-        if (value == Double.NEGATIVE_INFINITY) {
+        if (value == Double.NEGATIVE_INFINITY)
             return 0D;
-        }
 
         return clamp(value, 0D, capacity);
     }

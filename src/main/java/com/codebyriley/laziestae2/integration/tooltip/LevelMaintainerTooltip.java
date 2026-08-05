@@ -14,17 +14,15 @@ import net.minecraft.util.EnumChatFormatting;
  */
 public final class LevelMaintainerTooltip {
 
-    private LevelMaintainerTooltip() {
-    }
+    private LevelMaintainerTooltip() { }
 
     public static boolean supports(TileEntity tile) {
         return tile instanceof TileLevelMaintainer;
     }
 
     public static void writeData(NBTTagCompound data, TileEntity tile, boolean details) {
-        if (!supports(tile)) {
+        if (!supports(tile))
             return;
-        }
 
         TileLevelMaintainer maintainer = (TileLevelMaintainer)tile;
         NBTTagCompound tag = new NBTTagCompound();
@@ -32,15 +30,13 @@ public final class LevelMaintainerTooltip {
         int active = 0;
 
         for (int slot = 0; slot < TileLevelMaintainer.REQ_COUNT; slot++) {
-            if (!maintainer.isRequesting(slot)) {
+            if (!maintainer.isRequesting(slot))
                 continue;
-            }
 
             active++;
 
-            if (!details) {
+            if (!details)
                 continue;
-            }
 
             ItemStack stack = maintainer.getRequestStack(slot);
             NBTTagCompound line = new NBTTagCompound();
@@ -78,15 +74,13 @@ public final class LevelMaintainerTooltip {
                     stock < 0L ? TooltipText.translate("unknown") : TooltipText.count(stock),
                     TooltipText.count(row.getLong("Target")));
 
-            if (row.getBoolean("Crafting")) {
+            if (row.getBoolean("Crafting"))
                 text = text + " " + EnumChatFormatting.AQUA + TooltipText.translate("crafting");
-            }
 
             lines.add(text);
         }
 
-        if (!tag.getBoolean("Connected")) {
+        if (!tag.getBoolean("Connected"))
             lines.add(EnumChatFormatting.RED + TooltipText.translate("no_channel"));
-        }
     }
 }

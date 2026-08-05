@@ -71,16 +71,14 @@ public abstract class LazyMachineRecipeHandler extends TemplateRecipeHandler {
      * loaders, and the machine GUI's progress arrow calls NEI directly.
      */
     @Override
-    public void loadTransferRects() {
-    }
+    public void loadTransferRects() { }
 
     protected PositionedStack toPositionedStack(ItemStackMatcher matcher, int x, int y) {
         List<ItemStack> stacks = matcher.getDisplayStacks();
         if (stacks.isEmpty()) {
             ItemStack single = matcher.getDisplayStack();
-            if (single == null) {
+            if (single == null)
                 return null;
-            }
             stacks = new ArrayList<ItemStack>();
             stacks.add(single);
         }
@@ -103,17 +101,15 @@ public abstract class LazyMachineRecipeHandler extends TemplateRecipeHandler {
 
         public void addIngredient(ItemStackMatcher matcher, int x, int y) {
             PositionedStack stack = toPositionedStack(matcher, x, y);
-            if (stack != null) {
+            if (stack != null)
                 ingredients.add(stack);
-            }
         }
 
         public boolean usesIngredient(ItemStack query) {
             for (PositionedStack ingredient : ingredients) {
                 for (ItemStack option : ingredient.items) {
-                    if (NEIServerUtils.areStacksSameTypeCrafting(option, query)) {
+                    if (NEIServerUtils.areStacksSameTypeCrafting(option, query))
                         return true;
-                    }
                 }
             }
             return false;

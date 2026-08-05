@@ -20,8 +20,7 @@ public final class MassAssemblerTooltip {
 
     private static final String STRUCTURE_KEY_PREFIX = "container.laziestae2.big_assembler.";
 
-    private MassAssemblerTooltip() {
-    }
+    private MassAssemblerTooltip() { }
 
     public static boolean supports(TileEntity tile) {
         return tile instanceof TileMassAssemblerController || tile instanceof TileMassAssemblerPart;
@@ -42,9 +41,8 @@ public final class MassAssemblerTooltip {
             return;
         }
 
-        if (controller != null) {
+        if (controller != null)
             writeControllerData(tag, controller);
-        }
 
         data.setTag(TooltipKeys.MASS_ASSEMBLER, tag);
     }
@@ -69,9 +67,8 @@ public final class MassAssemblerTooltip {
         tag.setBoolean("Connected", controller.isGridConnected());
 
         ItemStack activeJob = controller.getActiveJobResult();
-        if (activeJob != null) {
+        if (activeJob != null)
             tag.setString("ActiveJob", activeJob.getDisplayName());
-        }
     }
 
     public static boolean hasData(NBTTagCompound data) {
@@ -108,9 +105,8 @@ public final class MassAssemblerTooltip {
     public static void appendLines(NBTTagCompound tag, List<String> lines, boolean details, boolean withProgress) {
         if (!hasController(tag)) {
             // A part with no reachable controller, or details were not requested.
-            if (tag.getBoolean("IsPart") && !tag.getBoolean("Active")) {
+            if (tag.getBoolean("IsPart") && !tag.getBoolean("Active"))
                 lines.add(EnumChatFormatting.RED + structureText("incomplete"));
-            }
             return;
         }
 
@@ -132,23 +128,20 @@ public final class MassAssemblerTooltip {
                 TooltipText.ae(tag.getDouble("Energy")),
                 TooltipText.ae(tag.getDouble("MaxEnergy"))));
 
-        if (!tag.getBoolean("Connected")) {
+        if (!tag.getBoolean("Connected"))
             lines.add(EnumChatFormatting.RED + TooltipText.translate("no_channel"));
-        }
 
-        if (details) {
+        if (details)
             appendExtraData(tag, lines);
-        }
     }
 
     private static void appendStructureState(NBTTagCompound tag, List<String> lines) {
-        if (tag.getBoolean("TooLarge")) {
+        if (tag.getBoolean("TooLarge"))
             lines.add(EnumChatFormatting.RED + structureText("too_large"));
-        } else if (isFormed(tag)) {
+        else if (isFormed(tag))
             lines.add(structureText("formed"));
-        } else {
+        else
             lines.add(EnumChatFormatting.RED + structureText("incomplete"));
-        }
     }
 
     private static void appendExtraData(NBTTagCompound tag, List<String> lines) {

@@ -32,9 +32,8 @@ public enum WailaTooltipProvider implements IWailaDataProvider {
 
         @Override
         void read(NBTTagCompound tag, List<String> tip, IWailaDataAccessor accessor) {
-            if (MachineTooltip.hasData(tag)) {
+            if (MachineTooltip.hasData(tag))
                 MachineTooltip.appendLines(MachineTooltip.read(tag), tip, true);
-            }
         }
     },
 
@@ -47,9 +46,8 @@ public enum WailaTooltipProvider implements IWailaDataProvider {
 
         @Override
         void read(NBTTagCompound tag, List<String> tip, IWailaDataAccessor accessor) {
-            if (FastCrafterTooltip.hasData(tag)) {
+            if (FastCrafterTooltip.hasData(tag))
                 FastCrafterTooltip.appendLines(FastCrafterTooltip.read(tag), tip);
-            }
         }
     },
 
@@ -62,9 +60,8 @@ public enum WailaTooltipProvider implements IWailaDataProvider {
 
         @Override
         void read(NBTTagCompound tag, List<String> tip, IWailaDataAccessor accessor) {
-            if (LevelMaintainerTooltip.hasData(tag)) {
+            if (LevelMaintainerTooltip.hasData(tag))
                 LevelMaintainerTooltip.appendLines(LevelMaintainerTooltip.read(tag), tip);
-            }
         }
     },
 
@@ -77,23 +74,20 @@ public enum WailaTooltipProvider implements IWailaDataProvider {
 
         @Override
         void read(NBTTagCompound tag, List<String> tip, IWailaDataAccessor accessor) {
-            if (MassAssemblerTooltip.hasData(tag)) {
+            if (MassAssemblerTooltip.hasData(tag))
                 MassAssemblerTooltip.appendLines(MassAssemblerTooltip.read(tag), tip, isDetailed(accessor), true);
-            }
         }
     },
 
     SIDE_CONFIG("side_config") {
 
         @Override
-        void write(NBTTagCompound tag, TileEntity tile, boolean details) {
-        }
+        void write(NBTTagCompound tag, TileEntity tile, boolean details) { }
 
         @Override
         void read(NBTTagCompound tag, List<String> tip, IWailaDataAccessor accessor) {
-            if (isDetailed(accessor)) {
+            if (isDetailed(accessor))
                 SideConfigTooltip.appendLines(accessor.getTileEntity(), accessor.getSide().ordinal(), tip);
-            }
         }
     };
 
@@ -131,9 +125,8 @@ public enum WailaTooltipProvider implements IWailaDataProvider {
     @Override
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
             IWailaConfigHandler config) {
-        if (!config.getConfig(configKey, true)) {
+        if (!config.getConfig(configKey, true))
             return currenttip;
-        }
 
         NBTTagCompound tag = accessor.getNBTData();
         read(tag == null ? new NBTTagCompound() : tag, currenttip, accessor);

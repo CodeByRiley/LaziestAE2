@@ -97,9 +97,8 @@ public class ContainerMassAssembler extends Container {
     }
 
     public void setCurrentPage(int page) {
-        if (page >= 0 && page < pages.size()) {
+        if (page >= 0 && page < pages.size())
             currentPage = page;
-        }
     }
 
     private boolean isPageActive(int pageIndex) {
@@ -263,9 +262,8 @@ public class ContainerMassAssembler extends Container {
     @Override
     public ItemStack slotClick(int slotId, int button, int mode, EntityPlayer player) {
         // Slots on hidden pages are still part of the container; ignore clicks on them.
-        if (slotId >= 0 && slotId < getPatternSlotCount() && !isPageActive(slotId / PATTERNS_PER_PAGE)) {
+        if (slotId >= 0 && slotId < getPatternSlotCount() && !isPageActive(slotId / PATTERNS_PER_PAGE))
             return null;
-        }
 
         return super.slotClick(slotId, button, mode, player);
     }
@@ -286,26 +284,22 @@ public class ContainerMassAssembler extends Container {
                     return null;
                 }
             } else {
-                if (!TileMassAssemblerPatternProvider.isPatternStack(stack)) {
+                if (!TileMassAssemblerPatternProvider.isPatternStack(stack))
                     return null;
-                }
 
                 // Only the visible page accepts shift-clicked patterns.
                 int pageStart = currentPage * PATTERNS_PER_PAGE;
-                if (!mergeItemStack(stack, pageStart, pageStart + PATTERNS_PER_PAGE, false)) {
+                if (!mergeItemStack(stack, pageStart, pageStart + PATTERNS_PER_PAGE, false))
                     return null;
-                }
             }
 
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 slot.putStack(null);
-            } else {
+            else
                 slot.onSlotChanged();
-            }
 
-            if (stack.stackSize == original.stackSize) {
+            if (stack.stackSize == original.stackSize)
                 return null;
-            }
 
             slot.onPickupFromSlot(player, stack);
         }
@@ -409,16 +403,14 @@ public class ContainerMassAssembler extends Container {
     }
 
     private void sendIfChanged(ICrafting crafter, int id, int oldValue, int newValue) {
-        if (oldValue != newValue) {
+        if (oldValue != newValue)
             crafter.sendProgressBarUpdate(this, id, newValue);
-        }
     }
 
     private int getEnergyScaledFromController() {
         double capacity = controller.getEnergyCapacity();
-        if (capacity <= 0D) {
+        if (capacity <= 0D)
             return 0;
-        }
 
         return Math.min(ENERGY_SCALE, (int)Math.round(controller.getStoredEnergy() * ENERGY_SCALE / capacity));
     }

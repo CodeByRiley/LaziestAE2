@@ -22,7 +22,7 @@ public class LaziestAE2ConfigGui extends GuiConfig {
 
     private static List<IConfigElement> getConfigElements() {
 
-        final List<IConfigElement> elements = new ArrayList<>();
+        final List<IConfigElement> elements = new ArrayList<IConfigElement>();
 
         for (final String cat : LaziestConfig.getConfig().getCategoryNames()) {
             final ConfigCategory cc = LaziestConfig.getConfig().getCategory(cat);

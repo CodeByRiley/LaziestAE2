@@ -10,25 +10,22 @@ import com.codebyriley.laziestae2.integration.nei.NEIRecipeLauncher;
  */
 public final class NEIGuiBridge {
 
-    private NEIGuiBridge() {
-    }
+    private NEIGuiBridge() { }
 
     public static boolean isAvailable() {
         return LaziestConfig.enableNeiIntegration && IntegrationManager.isNeiLoaded();
     }
 
     public static boolean openRecipes(String identifier) {
-        if (identifier == null || !isAvailable()) {
+        if (identifier == null || !isAvailable())
             return false;
-        }
 
         return NEIRecipeLauncher.openRecipes(identifier);
     }
 
     public static boolean openUsage(String identifier) {
-        if (identifier == null || !isAvailable()) {
+        if (identifier == null || !isAvailable())
             return false;
-        }
 
         return NEIRecipeLauncher.openUsage(identifier);
     }

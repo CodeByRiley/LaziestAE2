@@ -46,12 +46,10 @@ public class PoweredGridBlock implements IGridBlock {
     }
 
     @Override
-    public void onGridNotification(GridNotification notification) {
-    }
+    public void onGridNotification(GridNotification notification) { }
 
     @Override
-    public void setNetworkStatus(IGrid grid, int channelsInUse) {
-    }
+    public void setNetworkStatus(IGrid grid, int channelsInUse) { }
 
     @Override
     public EnumSet<ForgeDirection> getConnectableSides() {
@@ -64,8 +62,7 @@ public class PoweredGridBlock implements IGridBlock {
     }
 
     @Override
-    public void gridChanged() {
-    }
+    public void gridChanged() { }
 
     @Override
     public ItemStack getMachineRepresentation() {

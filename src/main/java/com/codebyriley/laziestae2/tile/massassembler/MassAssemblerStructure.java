@@ -20,15 +20,13 @@ public final class MassAssemblerStructure {
             { 0, 0, -1 }
     };
 
-    private MassAssemblerStructure() {
-    }
+    private MassAssemblerStructure() { }
 
     public static ScanResult scan(World world, int x, int y, int z) {
         ScanResult result = new ScanResult();
 
-        if (world == null || getPartType(world, x, y, z) == null) {
+        if (world == null || getPartType(world, x, y, z) == null)
             return result;
-        }
 
         Queue<Coord> queue = new ArrayDeque<Coord>();
         Set<Long> visited = new HashSet<Long>();
@@ -38,14 +36,12 @@ public final class MassAssemblerStructure {
             Coord coord = queue.remove();
             long key = pack(coord.x, coord.y, coord.z);
 
-            if (!visited.add(key)) {
+            if (!visited.add(key))
                 continue;
-            }
 
             MassAssemblerPartType type = getPartType(world, coord.x, coord.y, coord.z);
-            if (type == null) {
+            if (type == null)
                 continue;
-            }
 
             result.addPart(type, coord.x, coord.y, coord.z);
 
@@ -54,9 +50,8 @@ public final class MassAssemblerStructure {
                 int nextY = coord.y + neighbor[1];
                 int nextZ = coord.z + neighbor[2];
 
-                if (!visited.contains(pack(nextX, nextY, nextZ)) && getPartType(world, nextX, nextY, nextZ) != null) {
+                if (!visited.contains(pack(nextX, nextY, nextZ)) && getPartType(world, nextX, nextY, nextZ) != null)
                     queue.add(new Coord(nextX, nextY, nextZ));
-                }
             }
         }
 
@@ -66,29 +61,25 @@ public final class MassAssemblerStructure {
 
     public static TileMassAssemblerController findConnectedController(World world, int x, int y, int z) {
         ScanResult result = scan(world, x, y, z);
-        if (result.getControllerCount() != 1) {
+        if (result.getControllerCount() != 1)
             return null;
-        }
 
         TileEntity tile = world.getTileEntity(result.getControllerX(), result.getControllerY(), result.getControllerZ());
         return tile instanceof TileMassAssemblerController ? (TileMassAssemblerController)tile : null;
     }
 
     public static void refreshConnectedController(World world, int x, int y, int z) {
-        if (world == null || world.isRemote) {
+        if (world == null || world.isRemote)
             return;
-        }
 
         TileMassAssemblerController controller = findConnectedController(world, x, y, z);
-        if (controller != null) {
+        if (controller != null)
             controller.refreshStructure();
-        }
     }
 
     private static MassAssemblerPartType getPartType(World world, int x, int y, int z) {
-        if (world.getBlock(x, y, z) != ModBlocks.bigAssembler) {
+        if (world.getBlock(x, y, z) != ModBlocks.bigAssembler)
             return null;
-        }
 
         return MassAssemblerPartType.fromMetadata(world.getBlockMetadata(x, y, z));
     }

@@ -45,17 +45,15 @@ public class ItemBlockMetadata extends ItemBlock {
 
         String base = getUnlocalizedName(stack) + ".tooltip";
         String first = translateOrNull(base);
-        if (first == null) {
+        if (first == null)
             return;
-        }
 
         tooltip.add(EnumChatFormatting.GRAY + first);
 
         for (int line = 2; line <= MAX_TOOLTIP_LINES; line++) {
             String extra = translateOrNull(base + "." + line);
-            if (extra == null) {
+            if (extra == null)
                 break;
-            }
 
             tooltip.add(EnumChatFormatting.GRAY + extra);
         }

@@ -237,9 +237,8 @@ public final class MachineGuiDefinition {
     /** Index of the upgrade slot, or -1 if this machine has none. */
     public int getUpgradeSlotIndex() {
         for (int i = 0; i < slots.length; i++) {
-            if (slots[i].isUpgrade()) {
+            if (slots[i].isUpgrade())
                 return i;
-            }
         }
         return -1;
     }

@@ -38,9 +38,8 @@ public class SideConfiguration {
 
     /** Returns true if the mode actually changed. */
     public boolean setMode(int side, MachineSideMode mode) {
-        if (side < 0 || side >= modes.length || mode == null || modes[side] == mode) {
+        if (side < 0 || side >= modes.length || mode == null || modes[side] == mode)
             return false;
-        }
 
         modes[side] = mode;
         return true;
@@ -51,9 +50,8 @@ public class SideConfiguration {
     }
 
     public boolean setFacing(int side) {
-        if (side < 2 || side > 5 || facing == side) {
+        if (side < 2 || side > 5 || facing == side)
             return false;
-        }
 
         facing = side;
         return true;
@@ -107,8 +105,7 @@ public class SideConfiguration {
             modes[i] = MachineSideMode.byIndex(packed[i]);
         }
 
-        if (tag.hasKey("Facing")) {
+        if (tag.hasKey("Facing"))
             facing = tag.getByte("Facing");
-        }
     }
 }

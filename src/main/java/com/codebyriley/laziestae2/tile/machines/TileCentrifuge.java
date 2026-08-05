@@ -53,18 +53,15 @@ public class TileCentrifuge extends TileMachine {
     protected void onWorkFinished() {
         CentrifugeRecipe recipe = activeRecipe;
 
-        if (recipe == null || !recipe.matches(getStackInSlot(INPUT))) {
+        if (recipe == null || !recipe.matches(getStackInSlot(INPUT)))
             recipe = ProcessingRecipeRegistry.findCentrifugeRecipe(getStackInSlot(INPUT));
-        }
 
-        if (recipe == null) {
+        if (recipe == null)
             return;
-        }
 
         ItemStack output = recipe.getOutput();
-        if (!canAcceptOutput(output, OUTPUT)) {
+        if (!canAcceptOutput(output, OUTPUT))
             return;
-        }
 
         decrStackSize(INPUT, 1);
         insertOutput(output, OUTPUT);

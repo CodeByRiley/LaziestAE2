@@ -18,9 +18,8 @@ public class NEIGuiSpaceHandler implements INEIGuiHandler {
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int width, int height) {
-        if (!(gui instanceof ISideIoGui)) {
+        if (!(gui instanceof ISideIoGui))
             return false;
-        }
 
         Rectangle tabs = ((ISideIoGui)gui).getSideIoBounds();
         return tabs != null && tabs.intersects(new Rectangle(x, y, width, height));

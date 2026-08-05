@@ -30,8 +30,7 @@ public final class ModRecipes {
     // Sky stone block metadata: 0 raw, 1 smooth, 2 brick, 3 small brick.
     private static final int SKY_STONE_SMOOTH_META = 1;
 
-    private ModRecipes() {
-    }
+    private ModRecipes() { }
 
     public static void register() {
         ProcessingRecipeRegistry.initDefaults();
@@ -214,9 +213,8 @@ public final class ModRecipes {
      * (an AE2 feature may be disabled in its config).
      */
     private static void addShaped(ItemStack output, String[] pattern, Object... keyed) {
-        if (output == null) {
+        if (output == null)
             return;
-        }
 
         List<Object> args = new ArrayList<Object>();
         Collections.addAll(args, (Object[])pattern);
@@ -236,9 +234,8 @@ public final class ModRecipes {
     }
 
     private static void addShapeless(ItemStack output, Object... ingredients) {
-        if (output == null) {
+        if (output == null)
             return;
-        }
 
         for (Object ingredient : ingredients) {
             if (ingredient == null) {

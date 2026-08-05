@@ -11,6 +11,5 @@ public final class GuiIds {
     public static final int BIG_ASSEMBLER = 6;
     public static final int PATTERN_PROVIDER = 7;
 
-    private GuiIds() {
-    }
+    private GuiIds() { }
 }

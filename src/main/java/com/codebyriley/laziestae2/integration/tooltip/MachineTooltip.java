@@ -13,17 +13,15 @@ import net.minecraft.util.EnumChatFormatting;
  */
 public final class MachineTooltip {
 
-    private MachineTooltip() {
-    }
+    private MachineTooltip() { }
 
     public static boolean supports(TileEntity tile) {
         return tile instanceof TileMachine;
     }
 
     public static void writeData(NBTTagCompound data, TileEntity tile) {
-        if (!supports(tile)) {
+        if (!supports(tile))
             return;
-        }
 
         TileMachine machine = (TileMachine)tile;
         NBTTagCompound tag = new NBTTagCompound();
@@ -74,12 +72,10 @@ public final class MachineTooltip {
                 TooltipText.ae(tag.getDouble("MaxEnergy"))));
 
         int upgrades = tag.getInteger("Upgrades");
-        if (upgrades > 0) {
+        if (upgrades > 0)
             lines.add(TooltipText.format("cards", upgrades, TileMachine.MAX_UPGRADES));
-        }
 
-        if (!tag.getBoolean("Connected")) {
+        if (!tag.getBoolean("Connected"))
             lines.add(EnumChatFormatting.RED + TooltipText.translate("no_channel"));
-        }
     }
 }

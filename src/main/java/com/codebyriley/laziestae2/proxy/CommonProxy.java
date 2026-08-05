@@ -12,8 +12,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 public class CommonProxy {
 
-    public void preInit(FMLPreInitializationEvent event) {
-    }
+    public void preInit(FMLPreInitializationEvent event) { }
 
     public void init(FMLInitializationEvent event) {
         LazyNetwork.init();
@@ -21,8 +20,7 @@ public class CommonProxy {
         IntegrationManager.initCommon();
     }
 
-    public void postInit(FMLPostInitializationEvent event) {
-    }
+    public void postInit(FMLPostInitializationEvent event) { }
 
     protected IGuiHandler createGuiHandler() {
         return new GuiHandler();

@@ -9,8 +9,7 @@ public final class LazyNetwork {
 
     public static final SimpleNetworkWrapper CHANNEL = NetworkRegistry.INSTANCE.newSimpleChannel(Constants.MOD_ID);
 
-    private LazyNetwork() {
-    }
+    private LazyNetwork() { }
 
     public static void init() {
         CHANNEL.registerMessage(MessageLevelMaintainerRequest.Handler.class, MessageLevelMaintainerRequest.class,

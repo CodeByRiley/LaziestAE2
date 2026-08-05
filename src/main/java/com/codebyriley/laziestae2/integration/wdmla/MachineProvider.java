@@ -28,9 +28,8 @@ public enum MachineProvider implements IBlockComponentProvider, IServerDataProvi
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor) {
-        if (!MachineTooltip.hasData(accessor.getServerData())) {
+        if (!MachineTooltip.hasData(accessor.getServerData()))
             return;
-        }
 
         NBTTagCompound tag = MachineTooltip.read(accessor.getServerData());
 

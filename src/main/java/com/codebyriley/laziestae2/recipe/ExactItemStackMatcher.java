@@ -8,9 +8,8 @@ public class ExactItemStackMatcher implements ItemStackMatcher {
     private final ItemStack expected;
 
     public ExactItemStackMatcher(ItemStack expected) {
-        if (expected == null) {
+        if (expected == null)
             throw new IllegalArgumentException("Expected stack cannot be null");
-        }
 
         this.expected = expected.copy();
         this.expected.stackSize = 1;
@@ -18,13 +17,11 @@ public class ExactItemStackMatcher implements ItemStackMatcher {
 
     @Override
     public boolean matches(ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0 || stack.getItem() != expected.getItem()) {
+        if (stack == null || stack.stackSize <= 0 || stack.getItem() != expected.getItem())
             return false;
-        }
 
-        if (expected.getItemDamage() != OreDictionary.WILDCARD_VALUE && stack.getItemDamage() != expected.getItemDamage()) {
+        if (expected.getItemDamage() != OreDictionary.WILDCARD_VALUE && stack.getItemDamage() != expected.getItemDamage())
             return false;
-        }
 
         return !expected.hasTagCompound() || ItemStack.areItemStackTagsEqual(expected, stack);
     }

@@ -6,12 +6,10 @@ import com.codebyriley.laziestae2.integration.nei.NEIIntegration;
 
 public final class ClientIntegrationManager {
 
-    private ClientIntegrationManager() {
-    }
+    private ClientIntegrationManager() { }
 
     public static void init() {
-        if (LaziestConfig.enableNeiIntegration && IntegrationManager.isNeiLoaded()) {
+        if (LaziestConfig.enableNeiIntegration && IntegrationManager.isNeiLoaded())
             NEIIntegration.init();
-        }
     }
 }

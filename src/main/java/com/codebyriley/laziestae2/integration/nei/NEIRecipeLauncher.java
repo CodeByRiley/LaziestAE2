@@ -10,8 +10,7 @@ import codechicken.nei.recipe.GuiUsageRecipe;
  */
 public final class NEIRecipeLauncher {
 
-    private NEIRecipeLauncher() {
-    }
+    private NEIRecipeLauncher() { }
 
     public static boolean openRecipes(String identifier) {
         return GuiCraftingRecipe.openRecipeGui(identifier);

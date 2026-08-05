@@ -17,13 +17,11 @@ public class EtcherRecipe {
     private final ItemStack output;
 
     public EtcherRecipe(ItemStackMatcher top, ItemStackMatcher bottom, ItemStackMatcher middle, ItemStack output) {
-        if (top == null || bottom == null || middle == null) {
+        if (top == null || bottom == null || middle == null)
             throw new IllegalArgumentException("Etcher recipe inputs cannot be null");
-        }
 
-        if (output == null || output.stackSize <= 0) {
+        if (output == null || output.stackSize <= 0)
             throw new IllegalArgumentException("Etcher recipe output cannot be empty");
-        }
 
         this.inputs = new ItemStackMatcher[] { top, bottom, middle };
         this.output = output.copy();

@@ -66,14 +66,12 @@ public class TileEtcher extends TileMachine {
                     getStackInSlot(INPUT_MIDDLE));
         }
 
-        if (recipe == null) {
+        if (recipe == null)
             return;
-        }
 
         ItemStack output = recipe.getOutput();
-        if (!canAcceptOutput(output, OUTPUT)) {
+        if (!canAcceptOutput(output, OUTPUT))
             return;
-        }
 
         decrStackSize(INPUT_TOP, 1);
         decrStackSize(INPUT_BOTTOM, 1);

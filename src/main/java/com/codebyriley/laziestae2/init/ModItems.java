@@ -9,8 +9,7 @@ public final class ModItems {
 
     public static ItemLazyMaterial material;
 
-    private ModItems() {
-    }
+    private ModItems() { }
 
     public static void register() {
         material = new ItemLazyMaterial();

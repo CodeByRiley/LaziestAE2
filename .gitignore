@@ -1,4 +1,4 @@
-# --- build output ---
+# build output
 .gradle/
 build/
 out/
@@ -9,7 +9,7 @@ libs/
 # ForgeGradle dev environment
 run/
 
-# --- IDEs ---
+# IDEs
 # eclipse
 *.launch
 .settings/
@@ -26,19 +26,16 @@ eclipse/
 # vscode
 .vscode/
 
-# --- tooling ---
+# tooling
 .claude/
 
-# --- os ---
+# os
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# --- jvm / logs ---
+# jvm / logs
 *.log
 hs_err_pid*
 replay_pid*
 .attach_pid*
-
-# Note: gradle/wrapper/gradle-wrapper.jar is intentionally committed, so do not
-# add a blanket *.jar rule above.

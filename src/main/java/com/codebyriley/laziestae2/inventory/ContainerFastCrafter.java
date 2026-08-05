@@ -71,9 +71,8 @@ public class ContainerFastCrafter extends Container {
             original = stack.copy();
 
             if (index < TileFastCrafter.SLOT_COUNT) {
-                if (!mergeItemStack(stack, TileFastCrafter.SLOT_COUNT, inventorySlots.size(), true)) {
+                if (!mergeItemStack(stack, TileFastCrafter.SLOT_COUNT, inventorySlots.size(), true))
                     return null;
-                }
 
                 slot.onSlotChange(stack, original);
             } else if (TileFastCrafter.isPatternStack(stack)) {
@@ -86,15 +85,13 @@ public class ContainerFastCrafter extends Container {
                 return null;
             }
 
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 slot.putStack(null);
-            } else {
+            else
                 slot.onSlotChanged();
-            }
 
-            if (stack.stackSize == original.stackSize) {
+            if (stack.stackSize == original.stackSize)
                 return null;
-            }
 
             slot.onPickupFromSlot(player, stack);
         }

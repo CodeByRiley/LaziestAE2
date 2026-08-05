@@ -27,9 +27,8 @@ public enum FastCrafterProvider implements IBlockComponentProvider, IServerDataP
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor) {
-        if (!FastCrafterTooltip.hasData(accessor.getServerData())) {
+        if (!FastCrafterTooltip.hasData(accessor.getServerData()))
             return;
-        }
 
         List<String> lines = new ArrayList<String>();
         FastCrafterTooltip.appendLines(FastCrafterTooltip.read(accessor.getServerData()), lines);

@@ -65,22 +65,19 @@ public class TileAggregator extends TileMachine {
                     getStackInSlot(INPUT_C));
         }
 
-        if (recipe == null) {
+        if (recipe == null)
             return;
-        }
 
         ItemStack output = recipe.getOutput();
-        if (!canAcceptOutput(output, OUTPUT)) {
+        if (!canAcceptOutput(output, OUTPUT))
             return;
-        }
 
         int[] matchedSlots = recipe.getMatchingSlots(
                 getStackInSlot(INPUT_A),
                 getStackInSlot(INPUT_B),
                 getStackInSlot(INPUT_C));
-        if (matchedSlots == null) {
+        if (matchedSlots == null)
             return;
-        }
 
         for (int matchedSlot : matchedSlots) {
             decrStackSize(matchedSlot, 1);

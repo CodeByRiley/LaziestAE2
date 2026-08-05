@@ -79,18 +79,15 @@ public class BlockMachine extends Block implements IMetadataBlock {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side,
             float hitX, float hitY, float hitZ) {
-        if (player.isSneaking()) {
+        if (player.isSneaking())
             return false;
-        }
 
         MachineGuiDefinition definition = MachineGuiDefinition.byGuiId(world.getBlockMetadata(x, y, z));
-        if (definition == null) {
+        if (definition == null)
             return false;
-        }
 
-        if (!world.isRemote) {
+        if (!world.isRemote)
             player.openGui(LaziestAE2.instance, definition.getGuiId(), world, x, y, z);
-        }
 
         return true;
     }
@@ -102,9 +99,8 @@ public class BlockMachine extends Block implements IMetadataBlock {
         super.onBlockPlacedBy(world, x, y, z, placer, stack);
 
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (!(tile instanceof ISideConfigurable)) {
+        if (!(tile instanceof ISideConfigurable))
             return;
-        }
 
         int rotation = MathHelper.floor_double((placer.rotationYaw * 4F / 360F) + 0.5D) & 3;
         // Rotation 0 means the player faces south, so the front looks back at them.
@@ -115,9 +111,8 @@ public class BlockMachine extends Block implements IMetadataBlock {
     @Override
     public void breakBlock(World world, int x, int y, int z, Block block, int metadata) {
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof IInventory) {
+        if (tile instanceof IInventory)
             InventoryDropHelper.dropInventoryItems(world, x, y, z, (IInventory)tile);
-        }
 
         super.breakBlock(world, x, y, z, block, metadata);
     }
@@ -160,9 +155,8 @@ public class BlockMachine extends Block implements IMetadataBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int metadata) {
-        if (side == FRONT_SIDE) {
+        if (side == FRONT_SIDE)
             return frontIcons[MathHelper.clamp_int(metadata, 0, VARIANTS.length - 1)];
-        }
         return sideIcon;
     }
 
@@ -173,9 +167,8 @@ public class BlockMachine extends Block implements IMetadataBlock {
         TileEntity tile = world.getTileEntity(x, y, z);
         int facing = tile instanceof ISideConfigurable ? ((ISideConfigurable)tile).getFacing() : FRONT_SIDE;
 
-        if (side != facing) {
+        if (side != facing)
             return sideIcon;
-        }
 
         int variant = MathHelper.clamp_int(world.getBlockMetadata(x, y, z), 0, VARIANTS.length - 1);
         return isActive(world, x, y, z) ? activeFrontIcons[variant] : frontIcons[variant];
@@ -185,9 +178,8 @@ public class BlockMachine extends Block implements IMetadataBlock {
     private static boolean isActive(IBlockAccess world, int x, int y, int z) {
         TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (tile instanceof TileMachine) {
+        if (tile instanceof TileMachine)
             return ((TileMachine)tile).isWorking();
-        }
 
         if (tile instanceof TilePowered) {
             // Network devices have no work cycle; light them up while grid-connected.

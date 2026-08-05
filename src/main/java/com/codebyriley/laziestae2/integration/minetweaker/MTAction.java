@@ -17,8 +17,7 @@ public abstract class MTAction implements IUndoableAction {
     }
 
     @Override
-    public void undo() {
-    }
+    public void undo() { }
 
     @Override
     public String describe() {

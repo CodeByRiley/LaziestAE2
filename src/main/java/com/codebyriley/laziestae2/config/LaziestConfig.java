@@ -229,9 +229,8 @@ public class LaziestConfig {
         } catch (Exception e) {
             LaziestAE2.logger.error("Failed to load config file", e);
         } finally {
-            if (config.hasChanged()) {
+            if (config.hasChanged())
                 config.save();
-            }
         }
     }
 
@@ -243,9 +242,8 @@ public class LaziestConfig {
     public void onConfigurationChangeEvent(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.modID.equalsIgnoreCase(Constants.MOD_ID)) {
             load(config);
-            if (config.hasChanged()) {
+            if (config.hasChanged())
                 config.save();
-            }
         }
     }
 }

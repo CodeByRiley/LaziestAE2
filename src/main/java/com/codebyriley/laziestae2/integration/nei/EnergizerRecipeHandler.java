@@ -63,9 +63,8 @@ public class EnergizerRecipeHandler extends LazyMachineRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         boolean isMachine = isMachineStack(result);
         for (EnergizerRecipe recipe : ProcessingRecipeRegistry.getEnergizerRecipes()) {
-            if (isMachine || isSameOutput(recipe.getOutput(), result)) {
+            if (isMachine || isSameOutput(recipe.getOutput(), result))
                 arecipes.add(createCached(recipe));
-            }
         }
     }
 
@@ -74,9 +73,8 @@ public class EnergizerRecipeHandler extends LazyMachineRecipeHandler {
         boolean isMachine = isMachineStack(ingredient);
         for (EnergizerRecipe recipe : ProcessingRecipeRegistry.getEnergizerRecipes()) {
             CachedMachineRecipe cached = createCached(recipe);
-            if (isMachine || cached.usesIngredient(ingredient)) {
+            if (isMachine || cached.usesIngredient(ingredient))
                 arecipes.add(cached);
-            }
         }
     }
 
@@ -93,15 +91,13 @@ public class EnergizerRecipeHandler extends LazyMachineRecipeHandler {
     private EnergizerRecipe findRecipeForIndex(int index) {
         // Recipes are appended in registry order for all load paths with a single
         // recipe type, so match by output against the cached entry.
-        if (index < 0 || index >= arecipes.size()) {
+        if (index < 0 || index >= arecipes.size())
             return null;
-        }
 
         ItemStack output = ((CachedMachineRecipe)arecipes.get(index)).getResult().item;
         for (EnergizerRecipe recipe : ProcessingRecipeRegistry.getEnergizerRecipes()) {
-            if (isSameOutput(recipe.getOutput(), output)) {
+            if (isSameOutput(recipe.getOutput(), output))
                 return recipe;
-            }
         }
         return null;
     }

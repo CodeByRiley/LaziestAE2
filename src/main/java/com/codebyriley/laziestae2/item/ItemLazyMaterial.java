@@ -106,17 +106,15 @@ public class ItemLazyMaterial extends Item {
             boolean advanced) {
         String base = getUnlocalizedName(stack);
         String first = translateOrNull(base);
-        if (first == null) {
+        if (first == null)
             return;
-        }
 
         tooltip.add(net.minecraft.util.EnumChatFormatting.GRAY + first);
 
         for (int line = 2; line <= 8; line++) {
             String extra = translateOrNull(base + "." + line);
-            if (extra == null) {
+            if (extra == null)
                 break;
-            }
 
             tooltip.add(net.minecraft.util.EnumChatFormatting.GRAY + extra);
         }

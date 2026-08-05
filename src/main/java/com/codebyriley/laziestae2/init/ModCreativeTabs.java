@@ -10,8 +10,7 @@ public final class ModCreativeTabs {
 
     public static CreativeTabs tab;
 
-    private ModCreativeTabs() {
-    }
+    private ModCreativeTabs() { }
 
     public static void init() {
         tab = new CreativeTabs(Constants.MOD_ID) {

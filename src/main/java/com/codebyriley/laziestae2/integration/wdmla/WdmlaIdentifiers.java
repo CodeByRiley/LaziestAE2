@@ -17,8 +17,7 @@ public final class WdmlaIdentifiers {
     public static final ResourceLocation MASS_ASSEMBLER = id("mass_assembler");
     public static final ResourceLocation SIDE_CONFIG = id("side_config");
 
-    private WdmlaIdentifiers() {
-    }
+    private WdmlaIdentifiers() { }
 
     private static ResourceLocation id(String path) {
         return new ResourceLocation(NAMESPACE, path);

@@ -9,24 +9,21 @@ public class OreDictionaryItemStackMatcher implements ItemStackMatcher {
     private final String oreName;
 
     public OreDictionaryItemStackMatcher(String oreName) {
-        if (oreName == null || oreName.length() == 0) {
+        if (oreName == null || oreName.length() == 0)
             throw new IllegalArgumentException("Ore dictionary name cannot be empty");
-        }
 
         this.oreName = oreName;
     }
 
     @Override
     public boolean matches(ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0) {
+        if (stack == null || stack.stackSize <= 0)
             return false;
-        }
 
         int[] oreIds = OreDictionary.getOreIDs(stack);
         for (int oreId : oreIds) {
-            if (oreName.equals(OreDictionary.getOreName(oreId))) {
+            if (oreName.equals(OreDictionary.getOreName(oreId)))
                 return true;
-            }
         }
 
         return false;

@@ -22,9 +22,8 @@ public enum MassAssemblerPartType {
 
     public static MassAssemblerPartType fromMetadata(int metadata) {
         for (MassAssemblerPartType type : values()) {
-            if (type.metadata == metadata) {
+            if (type.metadata == metadata)
                 return type;
-            }
         }
 
         return null;

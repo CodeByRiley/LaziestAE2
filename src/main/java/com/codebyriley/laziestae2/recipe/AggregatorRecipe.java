@@ -10,13 +10,11 @@ public class AggregatorRecipe {
     private final ItemStack output;
 
     public AggregatorRecipe(ItemStackMatcher inputA, ItemStackMatcher inputB, ItemStackMatcher inputC, ItemStack output) {
-        if (inputA == null || inputB == null || inputC == null) {
+        if (inputA == null || inputB == null || inputC == null)
             throw new IllegalArgumentException("Aggregator recipe inputs cannot be null");
-        }
 
-        if (output == null || output.stackSize <= 0) {
+        if (output == null || output.stackSize <= 0)
             throw new IllegalArgumentException("Aggregator recipe output cannot be empty");
-        }
 
         this.inputs = new ItemStackMatcher[] { inputA, inputB, inputC };
         this.output = output.copy();
@@ -43,18 +41,16 @@ public class AggregatorRecipe {
     }
 
     private boolean matchInput(int inputIndex, ItemStack[] stacks, boolean[] usedSlots, int[] matchedSlots) {
-        if (inputIndex >= inputs.length) {
+        if (inputIndex >= inputs.length)
             return true;
-        }
 
         for (int slot = 0; slot < stacks.length; slot++) {
             if (!usedSlots[slot] && inputs[inputIndex].matches(stacks[slot])) {
                 usedSlots[slot] = true;
                 matchedSlots[inputIndex] = slot;
 
-                if (matchInput(inputIndex + 1, stacks, usedSlots, matchedSlots)) {
+                if (matchInput(inputIndex + 1, stacks, usedSlots, matchedSlots))
                     return true;
-                }
 
                 usedSlots[slot] = false;
             }

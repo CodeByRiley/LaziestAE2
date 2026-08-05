@@ -59,8 +59,7 @@ public final class CraftingCpuInternals {
         }
     }
 
-    private CraftingCpuInternals() {
-    }
+    private CraftingCpuInternals() { }
 
     public static boolean isAvailable() {
         return available;
@@ -70,16 +69,14 @@ public final class CraftingCpuInternals {
     public static List<CraftingTask> getTasks(ICraftingCPU cpu) {
         List<CraftingTask> tasks = new ArrayList<CraftingTask>();
 
-        if (!available || cpu == null || !clusterClass.isInstance(cpu)) {
+        if (!available || cpu == null || !clusterClass.isInstance(cpu))
             return tasks;
-        }
 
         try {
             Map<?, ?> taskMap = (Map<?, ?>)tasksField.get(cpu);
             for (Map.Entry<?, ?> entry : taskMap.entrySet()) {
-                if (entry.getKey() instanceof ICraftingPatternDetails) {
+                if (entry.getKey() instanceof ICraftingPatternDetails)
                     tasks.add(new CraftingTask(cpu, (ICraftingPatternDetails)entry.getKey(), entry.getValue()));
-                }
             }
         } catch (Throwable t) {
             disable(t);
@@ -132,9 +129,8 @@ public final class CraftingCpuInternals {
          * Restores anything already taken if the full set is not available.
          */
         public boolean tryExtractItems(BaseActionSource source) {
-            if (!available) {
+            if (!available)
                 return false;
-            }
 
             List<IAEItemStack> extracted = new ArrayList<IAEItemStack>();
 
@@ -142,17 +138,15 @@ public final class CraftingCpuInternals {
                 Object inventory = inventoryField.get(cpu);
 
                 for (IAEItemStack input : pattern.getCondensedInputs()) {
-                    if (input == null) {
+                    if (input == null)
                         continue;
-                    }
 
                     IAEItemStack taken = (IAEItemStack)extractMethod.invoke(
                             inventory, input, Actionable.MODULATE, source);
 
                     if (taken == null || taken.getStackSize() != input.getStackSize()) {
-                        if (taken != null) {
+                        if (taken != null)
                             extracted.add(taken);
-                        }
 
                         for (IAEItemStack rollback : extracted) {
                             injectMethod.invoke(inventory, rollback, Actionable.MODULATE, source);

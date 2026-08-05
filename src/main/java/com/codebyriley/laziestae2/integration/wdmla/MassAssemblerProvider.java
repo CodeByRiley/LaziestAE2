@@ -27,9 +27,8 @@ public enum MassAssemblerProvider implements IBlockComponentProvider, IServerDat
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor) {
-        if (!MassAssemblerTooltip.hasData(accessor.getServerData())) {
+        if (!MassAssemblerTooltip.hasData(accessor.getServerData()))
             return;
-        }
 
         NBTTagCompound tag = MassAssemblerTooltip.read(accessor.getServerData());
         List<String> lines = new ArrayList<String>();
@@ -42,9 +41,8 @@ public enum MassAssemblerProvider implements IBlockComponentProvider, IServerDat
         int workPerJob = MassAssemblerTooltip.getWorkPerJob(tag);
         String activeJob = MassAssemblerTooltip.getActiveJob(tag);
 
-        if (MassAssemblerTooltip.isFormed(tag) && workPerJob > 0 && !activeJob.isEmpty()) {
+        if (MassAssemblerTooltip.isFormed(tag) && workPerJob > 0 && !activeJob.isEmpty())
             tooltip.progress(MassAssemblerTooltip.getWork(tag), workPerJob, activeJob);
-        }
     }
 
     @Override

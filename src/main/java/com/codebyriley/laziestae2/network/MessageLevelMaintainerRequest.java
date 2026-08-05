@@ -23,8 +23,7 @@ public class MessageLevelMaintainerRequest implements IMessage {
     private int mode;
     private long value;
 
-    public MessageLevelMaintainerRequest() {
-    }
+    public MessageLevelMaintainerRequest() { }
 
     public MessageLevelMaintainerRequest(TileLevelMaintainer tile, int slot, int mode, long value) {
         this.x = tile.xCoord;
@@ -60,27 +59,23 @@ public class MessageLevelMaintainerRequest implements IMessage {
         @Override
         public IMessage onMessage(MessageLevelMaintainerRequest message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            if (player == null || player.worldObj == null) {
+            if (player == null || player.worldObj == null)
                 return null;
-            }
 
             TileEntity tile = player.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (!(tile instanceof TileLevelMaintainer)) {
+            if (!(tile instanceof TileLevelMaintainer))
                 return null;
-            }
 
             TileLevelMaintainer maintainer = (TileLevelMaintainer)tile;
 
             // Covers reach and ME security in one check, so a client that sends this
             // packet without a legitimately open GUI gets nothing.
-            if (!maintainer.isUseableByPlayer(player)) {
+            if (!maintainer.isUseableByPlayer(player))
                 return null;
-            }
-            if (message.mode == MODE_QUANTITY) {
+            if (message.mode == MODE_QUANTITY)
                 maintainer.setRequestQuantity(message.slot, message.value);
-            } else if (message.mode == MODE_BATCH) {
+            else if (message.mode == MODE_BATCH)
                 maintainer.setRequestBatch(message.slot, message.value);
-            }
 
             return null;
         }

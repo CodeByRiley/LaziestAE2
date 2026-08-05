@@ -27,9 +27,8 @@ public enum LevelMaintainerProvider implements IBlockComponentProvider, IServerD
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor) {
-        if (!LevelMaintainerTooltip.hasData(accessor.getServerData())) {
+        if (!LevelMaintainerTooltip.hasData(accessor.getServerData()))
             return;
-        }
 
         List<String> lines = new ArrayList<String>();
         LevelMaintainerTooltip.appendLines(LevelMaintainerTooltip.read(accessor.getServerData()), lines);

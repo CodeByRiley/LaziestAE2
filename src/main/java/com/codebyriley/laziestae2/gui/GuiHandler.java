@@ -49,14 +49,12 @@ public class GuiHandler implements IGuiHandler {
     }
 
     protected TileMachine getMachineTile(int id, World world, int x, int y, int z) {
-        if (MachineGuiDefinition.byGuiId(id) == null || id == GuiIds.BIG_ASSEMBLER) {
+        if (MachineGuiDefinition.byGuiId(id) == null || id == GuiIds.BIG_ASSEMBLER)
             return null;
-        }
 
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (!(tile instanceof TileMachine)) {
+        if (!(tile instanceof TileMachine))
             return null;
-        }
 
         TileMachine machine = (TileMachine)tile;
         return machine.getGuiDefinition().getGuiId() == id ? machine : null;

@@ -70,21 +70,18 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side,
             float hitX, float hitY, float hitZ) {
-        if (player.isSneaking()) {
+        if (player.isSneaking())
             return false;
-        }
 
         if (world.getBlockMetadata(x, y, z) == PATTERN_PROVIDER) {
-            if (!world.isRemote) {
+            if (!world.isRemote)
                 player.openGui(LaziestAE2.instance, GuiIds.PATTERN_PROVIDER, world, x, y, z);
-            }
             return true;
         }
 
         TileMassAssemblerController controller = MassAssemblerStructure.findConnectedController(world, x, y, z);
-        if (controller == null) {
+        if (controller == null)
             return false;
-        }
 
         if (!world.isRemote) {
             player.openGui(
@@ -116,18 +113,15 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
         TileMassAssemblerController controller = MassAssemblerStructure.findConnectedController(world, x, y, z);
 
         TileEntity tile = world.getTileEntity(x, y, z);
-        if (tile instanceof net.minecraft.inventory.IInventory) {
+        if (tile instanceof net.minecraft.inventory.IInventory)
             InventoryDropHelper.dropInventoryItems(world, x, y, z, (net.minecraft.inventory.IInventory)tile);
-        }
-        if (tile instanceof TileMassAssemblerController) {
+        if (tile instanceof TileMassAssemblerController)
             InventoryDropHelper.dropStacks(world, x, y, z, ((TileMassAssemblerController)tile).getDropStacks());
-        }
 
         super.breakBlock(world, x, y, z, block, metadata);
 
-        if (controller != null && !controller.isInvalid()) {
+        if (controller != null && !controller.isInvalid())
             controller.refreshStructure();
-        }
     }
 
     @Override
@@ -183,9 +177,8 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
     private static boolean isActive(IBlockAccess world, int x, int y, int z) {
         TileEntity tile = world.getTileEntity(x, y, z);
 
-        if (tile instanceof TileMassAssemblerController) {
+        if (tile instanceof TileMassAssemblerController)
             return ((TileMassAssemblerController)tile).isFormed();
-        }
 
         return tile instanceof TileMassAssemblerPart && ((TileMassAssemblerPart)tile).isActive();
     }

@@ -41,9 +41,8 @@ public class GuiFastCrafter extends GuiContainer implements ISideIoGui {
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         java.util.List<String> tooltip = sideIo.getTooltip(mouseX, mouseY, left, top);
-        if (tooltip != null) {
+        if (tooltip != null)
             func_146283_a(tooltip, mouseX, mouseY);
-        }
     }
 
     @Override
@@ -66,9 +65,8 @@ public class GuiFastCrafter extends GuiContainer implements ISideIoGui {
 
     @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int state) {
-        if (state == 0) {
+        if (state == 0)
             sideIo.handleRelease(xSize, ySize);
-        }
 
         super.mouseMovedOrUp(mouseX, mouseY, state);
     }

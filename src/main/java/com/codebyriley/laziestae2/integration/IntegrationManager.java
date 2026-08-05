@@ -14,8 +14,7 @@ public final class IntegrationManager {
     private static boolean wdmlaLoaded;
     private static boolean wailaLoaded;
 
-    private IntegrationManager() {
-    }
+    private IntegrationManager() { }
 
     public static void initCommon() {
         neiLoaded = Loader.isModLoaded("NotEnoughItems");

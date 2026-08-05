@@ -13,17 +13,15 @@ import net.minecraft.util.EnumChatFormatting;
  */
 public final class FastCrafterTooltip {
 
-    private FastCrafterTooltip() {
-    }
+    private FastCrafterTooltip() { }
 
     public static boolean supports(TileEntity tile) {
         return tile instanceof TileFastCrafter;
     }
 
     public static void writeData(NBTTagCompound data, TileEntity tile) {
-        if (!supports(tile)) {
+        if (!supports(tile))
             return;
-        }
 
         TileFastCrafter crafter = (TileFastCrafter)tile;
         NBTTagCompound tag = new NBTTagCompound();
@@ -52,22 +50,19 @@ public final class FastCrafterTooltip {
                 : TooltipText.translate("ready"));
 
         int imported = tag.getInteger("Import");
-        if (imported > 0) {
+        if (imported > 0)
             lines.add(TooltipText.format("returning", imported));
-        }
 
-        if (!tag.getBoolean("Connected")) {
+        if (!tag.getBoolean("Connected"))
             lines.add(EnumChatFormatting.RED + TooltipText.translate("no_channel"));
-        }
     }
 
     private static int countStacks(TileFastCrafter crafter, int start, int length) {
         int count = 0;
         for (int slot = start; slot < start + length; slot++) {
             ItemStack stack = crafter.getStackInSlot(slot);
-            if (stack != null) {
+            if (stack != null)
                 count++;
-            }
         }
         return count;
     }

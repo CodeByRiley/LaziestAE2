@@ -15,6 +15,5 @@ public final class TooltipKeys {
     public static final String LEVEL_MAINTAINER = Constants.MOD_ID + ":level_maintainer";
     public static final String MASS_ASSEMBLER = Constants.MOD_ID + ":mass_assembler";
 
-    private TooltipKeys() {
-    }
+    private TooltipKeys() { }
 }

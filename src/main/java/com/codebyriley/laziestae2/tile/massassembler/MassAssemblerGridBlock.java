@@ -29,23 +29,20 @@ public class MassAssemblerGridBlock extends PoweredGridBlock implements IGridMul
     public Iterator<IGridNode> getMultiblockNodes() {
         List<IGridNode> nodes = new ArrayList<IGridNode>();
 
-        if (tile.getWorldObj() == null) {
+        if (tile.getWorldObj() == null)
             return nodes.iterator();
-        }
 
         MassAssemblerStructure.ScanResult result = MassAssemblerStructure.scan(
                 tile.getWorldObj(), tile.xCoord, tile.yCoord, tile.zCoord);
 
         for (int[] pos : result.getPartPositions()) {
             TileEntity other = tile.getWorldObj().getTileEntity(pos[0], pos[1], pos[2]);
-            if (!(other instanceof IGridHost)) {
+            if (!(other instanceof IGridHost))
                 continue;
-            }
 
             IGridNode node = ((IGridHost)other).getGridNode(ForgeDirection.UNKNOWN);
-            if (node != null) {
+            if (node != null)
                 nodes.add(node);
-            }
         }
 
         return nodes.iterator();

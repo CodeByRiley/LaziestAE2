@@ -10,8 +10,7 @@ public final class ModBlocks {
     public static BlockMachine machine;
     public static BlockMassAssembler bigAssembler;
 
-    private ModBlocks() {
-    }
+    private ModBlocks() { }
 
     public static void register() {
         machine = new BlockMachine();

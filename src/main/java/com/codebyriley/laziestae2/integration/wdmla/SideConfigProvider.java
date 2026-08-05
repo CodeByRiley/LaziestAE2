@@ -16,9 +16,8 @@ public enum SideConfigProvider implements IBlockComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, BlockAccessor accessor) {
-        if (!accessor.showDetails()) {
+        if (!accessor.showDetails())
             return;
-        }
 
         MovingObjectPosition hit = accessor.getHitResult();
         List<String> lines = new ArrayList<String>();

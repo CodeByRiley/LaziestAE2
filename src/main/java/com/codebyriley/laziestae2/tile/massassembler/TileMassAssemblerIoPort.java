@@ -50,9 +50,8 @@ public class TileMassAssemblerIoPort extends TileMassAssemblerPart implements IS
             if (isActive() && worldObj != null) {
                 TileMassAssemblerController controller =
                         MassAssemblerStructure.findConnectedController(worldObj, xCoord, yCoord, zCoord);
-                if (controller != null) {
+                if (controller != null)
                     providerCache = controller.getPatternProviders();
-                }
             }
         }
 
@@ -60,16 +59,14 @@ public class TileMassAssemblerIoPort extends TileMassAssemblerPart implements IS
     }
 
     private TileMassAssemblerPatternProvider getProviderForSlot(int slot) {
-        if (slot < 0) {
+        if (slot < 0)
             return null;
-        }
 
         List<TileMassAssemblerPatternProvider> providers = getProviders();
         int index = slot / TileMassAssemblerPatternProvider.PATTERN_SLOTS;
 
-        if (index >= providers.size()) {
+        if (index >= providers.size())
             return null;
-        }
 
         TileMassAssemblerPatternProvider provider = providers.get(index);
         return provider.isInvalid() ? null : provider;
@@ -104,9 +101,8 @@ public class TileMassAssemblerIoPort extends TileMassAssemblerPart implements IS
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
         TileMassAssemblerPatternProvider provider = getProviderForSlot(slot);
-        if (provider != null) {
+        if (provider != null)
             provider.setInventorySlotContents(getLocalSlot(slot), stack);
-        }
     }
 
     @Override
@@ -132,12 +128,10 @@ public class TileMassAssemblerIoPort extends TileMassAssemblerPart implements IS
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() { }
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() { }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {

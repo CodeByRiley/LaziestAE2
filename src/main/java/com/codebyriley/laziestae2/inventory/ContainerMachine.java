@@ -61,21 +61,17 @@ public class ContainerMachine extends Container {
         for (Object crafterObject : crafters) {
             ICrafting crafter = (ICrafting)crafterObject;
 
-            if (work != currentWork) {
+            if (work != currentWork)
                 crafter.sendProgressBarUpdate(this, PROGRESS_WORK, currentWork);
-            }
 
-            if (maxWork != currentMaxWork) {
+            if (maxWork != currentMaxWork)
                 crafter.sendProgressBarUpdate(this, PROGRESS_MAX_WORK, currentMaxWork);
-            }
 
-            if (energyScaled != currentEnergy) {
+            if (energyScaled != currentEnergy)
                 crafter.sendProgressBarUpdate(this, PROGRESS_ENERGY, currentEnergy);
-            }
 
-            if (working != currentWorking) {
+            if (working != currentWorking)
                 crafter.sendProgressBarUpdate(this, PROGRESS_WORKING, currentWorking);
-            }
         }
 
         work = currentWork;
@@ -115,36 +111,30 @@ public class ContainerMachine extends Container {
             original = stack.copy();
 
             if (index < machineSlotCount) {
-                if (!mergeItemStack(stack, machineSlotCount, inventorySlots.size(), true)) {
+                if (!mergeItemStack(stack, machineSlotCount, inventorySlots.size(), true))
                     return null;
-                }
 
                 slot.onSlotChange(stack, original);
             } else {
                 boolean moved = false;
 
-                if (TileMachine.isAccelerationCard(stack)) {
+                if (TileMachine.isAccelerationCard(stack))
                     moved = mergeIntoUpgradeSlot(stack);
-                }
 
-                if (stack.stackSize > 0 && mergeItemStack(stack, 0, getInputSlotEnd(), false)) {
+                if (stack.stackSize > 0 && mergeItemStack(stack, 0, getInputSlotEnd(), false))
                     moved = true;
-                }
 
-                if (!moved) {
+                if (!moved)
                     return null;
-                }
             }
 
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 slot.putStack(null);
-            } else {
+            else
                 slot.onSlotChanged();
-            }
 
-            if (stack.stackSize == original.stackSize) {
+            if (stack.stackSize == original.stackSize)
                 return null;
-            }
 
             slot.onPickupFromSlot(player, stack);
         }
@@ -175,9 +165,8 @@ public class ContainerMachine extends Container {
     /** Machine slots are laid out inputs-first, so inputs end at the first output/upgrade slot. */
     private int getInputSlotEnd() {
         for (int i = 0; i < machineSlotCount; i++) {
-            if (definition.isOutputSlot(i) || definition.isUpgradeSlot(i)) {
+            if (definition.isOutputSlot(i) || definition.isUpgradeSlot(i))
                 return i;
-            }
         }
         return machineSlotCount;
     }
@@ -186,25 +175,22 @@ public class ContainerMachine extends Container {
     // slot gets its own merge.
     private boolean mergeIntoUpgradeSlot(ItemStack stack) {
         int upgradeIndex = definition.getUpgradeSlotIndex();
-        if (upgradeIndex == -1) {
+        if (upgradeIndex == -1)
             return false;
-        }
 
         ItemStack existing = tile.getStackInSlot(upgradeIndex);
         int space;
 
-        if (existing == null) {
+        if (existing == null)
             space = TileMachine.MAX_UPGRADES;
-        } else if (existing.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(existing, stack)) {
+        else if (existing.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(existing, stack))
             space = TileMachine.MAX_UPGRADES - existing.stackSize;
-        } else {
+        else
             return false;
-        }
 
         int moved = Math.min(space, stack.stackSize);
-        if (moved <= 0) {
+        if (moved <= 0)
             return false;
-        }
 
         if (existing == null) {
             ItemStack placed = stack.copy();
@@ -225,13 +211,12 @@ public class ContainerMachine extends Container {
         for (int i = 0; i < slots.length; i++) {
             MachineGuiDefinition.SlotDefinition slot = slots[i];
 
-            if (slot.isOutput()) {
+            if (slot.isOutput())
                 addSlotToContainer(new SlotOutput(tile, i, slot.getX(), slot.getY()));
-            } else if (slot.isUpgrade()) {
+            else if (slot.isUpgrade())
                 addSlotToContainer(new SlotUpgrade(tile, i, slot.getX(), slot.getY()));
-            } else {
+            else
                 addSlotToContainer(new Slot(tile, i, slot.getX(), slot.getY()));
-            }
         }
     }
 
@@ -288,9 +273,8 @@ public class ContainerMachine extends Container {
 
     private int getEnergyScaledFromTile() {
         double capacity = tile.getEnergyCapacity();
-        if (capacity <= 0D) {
+        if (capacity <= 0D)
             return 0;
-        }
 
         return Math.min(ENERGY_SCALE, (int)Math.round(tile.getStoredEnergy() * ENERGY_SCALE / capacity));
     }

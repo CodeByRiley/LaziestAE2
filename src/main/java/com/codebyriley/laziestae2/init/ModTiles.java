@@ -17,8 +17,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 
 public final class ModTiles {
 
-    private ModTiles() {
-    }
+    private ModTiles() { }
 
     public static void register() {
         GameRegistry.registerTileEntity(TileAggregator.class, Constants.MOD_ID + ".aggregator");

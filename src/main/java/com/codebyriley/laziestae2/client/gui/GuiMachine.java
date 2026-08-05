@@ -158,9 +158,8 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
     }
 
     private boolean isOverProgressArea(int mouseX, int mouseY) {
-        if (!definition.hasProgressArea()) {
+        if (!definition.hasProgressArea())
             return false;
-        }
 
         int left = (width - xSize) / 2 + definition.getProgressX();
         int top = (height - ySize) / 2 + definition.getProgressY();
@@ -202,9 +201,8 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
 
     @Override
     protected void mouseMovedOrUp(int mouseX, int mouseY, int state) {
-        if (state == 0) {
+        if (state == 0)
             sideIo.handleRelease(xSize, ySize);
-        }
 
         super.mouseMovedOrUp(mouseX, mouseY, state);
     }
@@ -221,9 +219,8 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
         int filled = Math.round(container.getWorkFraction() * barWidth);
 
         drawRect(left + 8, top + barY, left + 8 + barWidth, top + barY + 3, 0xFF3B3B3B);
-        if (filled > 0) {
+        if (filled > 0)
             drawRect(left + 8, top + barY, left + 8 + filled, top + barY + 3, 0xFF63B36F);
-        }
     }
 
     private String getTitle() {

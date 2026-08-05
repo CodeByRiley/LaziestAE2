@@ -30,8 +30,7 @@ public final class WailaIntegration {
 
     private static final String CONFIG_CATEGORY = Constants.NAME;
 
-    private WailaIntegration() {
-    }
+    private WailaIntegration() { }
 
     /** Asks Waila to call {@link #register(IWailaRegistrar)} during its IMC phase. */
     public static void sendRegistrationRequest() {

@@ -11,8 +11,7 @@ public final class InventoryDropHelper {
 
     private static final Random RANDOM = new Random();
 
-    private InventoryDropHelper() {
-    }
+    private InventoryDropHelper() { }
 
     public static void dropInventoryItems(World world, int x, int y, int z, IInventory inventory) {
         for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
@@ -27,9 +26,8 @@ public final class InventoryDropHelper {
 
     public static void dropStacks(World world, int x, int y, int z, java.util.List<ItemStack> stacks) {
         for (ItemStack stack : stacks) {
-            if (stack != null && stack.stackSize > 0) {
+            if (stack != null && stack.stackSize > 0)
                 dropStack(world, x, y, z, stack);
-            }
         }
     }
 
@@ -40,16 +38,14 @@ public final class InventoryDropHelper {
 
         while (stack.stackSize > 0) {
             int amount = RANDOM.nextInt(21) + 10;
-            if (amount > stack.stackSize) {
+            if (amount > stack.stackSize)
                 amount = stack.stackSize;
-            }
 
             stack.stackSize -= amount;
             ItemStack droppedStack = new ItemStack(stack.getItem(), amount, stack.getItemDamage());
 
-            if (stack.hasTagCompound()) {
+            if (stack.hasTagCompound())
                 droppedStack.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-            }
 
             EntityItem entityItem = new EntityItem(
                     world,

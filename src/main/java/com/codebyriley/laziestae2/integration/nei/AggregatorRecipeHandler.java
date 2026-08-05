@@ -59,9 +59,8 @@ public class AggregatorRecipeHandler extends LazyMachineRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         boolean isMachine = isMachineStack(result);
         for (AggregatorRecipe recipe : ProcessingRecipeRegistry.getAggregatorRecipes()) {
-            if (isMachine || isSameOutput(recipe.getOutput(), result)) {
+            if (isMachine || isSameOutput(recipe.getOutput(), result))
                 arecipes.add(createCached(recipe));
-            }
         }
     }
 
@@ -70,9 +69,8 @@ public class AggregatorRecipeHandler extends LazyMachineRecipeHandler {
         boolean isMachine = isMachineStack(ingredient);
         for (AggregatorRecipe recipe : ProcessingRecipeRegistry.getAggregatorRecipes()) {
             CachedMachineRecipe cached = createCached(recipe);
-            if (isMachine || cached.usesIngredient(ingredient)) {
+            if (isMachine || cached.usesIngredient(ingredient))
                 arecipes.add(cached);
-            }
         }
     }
 

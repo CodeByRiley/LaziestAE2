@@ -59,9 +59,8 @@ public class EtcherRecipeHandler extends LazyMachineRecipeHandler {
     public void loadCraftingRecipes(ItemStack result) {
         boolean isMachine = isMachineStack(result);
         for (EtcherRecipe recipe : ProcessingRecipeRegistry.getEtcherRecipes()) {
-            if (isMachine || isSameOutput(recipe.getOutput(), result)) {
+            if (isMachine || isSameOutput(recipe.getOutput(), result))
                 arecipes.add(createCached(recipe));
-            }
         }
     }
 
@@ -70,9 +69,8 @@ public class EtcherRecipeHandler extends LazyMachineRecipeHandler {
         boolean isMachine = isMachineStack(ingredient);
         for (EtcherRecipe recipe : ProcessingRecipeRegistry.getEtcherRecipes()) {
             CachedMachineRecipe cached = createCached(recipe);
-            if (isMachine || cached.usesIngredient(ingredient)) {
+            if (isMachine || cached.usesIngredient(ingredient))
                 arecipes.add(cached);
-            }
         }
     }
 

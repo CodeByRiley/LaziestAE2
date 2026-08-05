@@ -19,8 +19,7 @@ public final class ProcessingRecipeRegistry {
     private static final List<EtcherRecipe> etcherRecipes = new ArrayList<EtcherRecipe>();
     private static final List<EnergizerRecipe> energizerRecipes = new ArrayList<EnergizerRecipe>();
 
-    private ProcessingRecipeRegistry() {
-    }
+    private ProcessingRecipeRegistry() { }
 
     public static void initDefaults() {
         aggregatorRecipes.clear();
@@ -39,9 +38,8 @@ public final class ProcessingRecipeRegistry {
     }
 
     public static void addAggregatorRecipe(AggregatorRecipe recipe) {
-        if (recipe == null) {
+        if (recipe == null)
             throw new IllegalArgumentException("Aggregator recipe cannot be null");
-        }
 
         aggregatorRecipes.add(recipe);
     }
@@ -51,9 +49,8 @@ public final class ProcessingRecipeRegistry {
         List<AggregatorRecipe> removed = new ArrayList<AggregatorRecipe>();
 
         for (int i = aggregatorRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(aggregatorRecipes.get(i).getOutput(), output)) {
+            if (matchesOutput(aggregatorRecipes.get(i).getOutput(), output))
                 removed.add(aggregatorRecipes.remove(i));
-            }
         }
 
         return removed;
@@ -63,9 +60,8 @@ public final class ProcessingRecipeRegistry {
         List<CentrifugeRecipe> removed = new ArrayList<CentrifugeRecipe>();
 
         for (int i = centrifugeRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(centrifugeRecipes.get(i).getOutput(), output)) {
+            if (matchesOutput(centrifugeRecipes.get(i).getOutput(), output))
                 removed.add(centrifugeRecipes.remove(i));
-            }
         }
 
         return removed;
@@ -75,9 +71,8 @@ public final class ProcessingRecipeRegistry {
         List<EtcherRecipe> removed = new ArrayList<EtcherRecipe>();
 
         for (int i = etcherRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(etcherRecipes.get(i).getOutput(), output)) {
+            if (matchesOutput(etcherRecipes.get(i).getOutput(), output))
                 removed.add(etcherRecipes.remove(i));
-            }
         }
 
         return removed;
@@ -87,9 +82,8 @@ public final class ProcessingRecipeRegistry {
         List<EnergizerRecipe> removed = new ArrayList<EnergizerRecipe>();
 
         for (int i = energizerRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(energizerRecipes.get(i).getOutput(), output)) {
+            if (matchesOutput(energizerRecipes.get(i).getOutput(), output))
                 removed.add(energizerRecipes.remove(i));
-            }
         }
 
         return removed;
@@ -104,9 +98,8 @@ public final class ProcessingRecipeRegistry {
 
     public static AggregatorRecipe findAggregatorRecipe(ItemStack inputA, ItemStack inputB, ItemStack inputC) {
         for (AggregatorRecipe recipe : aggregatorRecipes) {
-            if (recipe.matches(inputA, inputB, inputC)) {
+            if (recipe.matches(inputA, inputB, inputC))
                 return recipe;
-            }
         }
 
         return null;
@@ -117,18 +110,16 @@ public final class ProcessingRecipeRegistry {
     }
 
     public static void addCentrifugeRecipe(CentrifugeRecipe recipe) {
-        if (recipe == null) {
+        if (recipe == null)
             throw new IllegalArgumentException("Centrifuge recipe cannot be null");
-        }
 
         centrifugeRecipes.add(recipe);
     }
 
     public static CentrifugeRecipe findCentrifugeRecipe(ItemStack input) {
         for (CentrifugeRecipe recipe : centrifugeRecipes) {
-            if (recipe.matches(input)) {
+            if (recipe.matches(input))
                 return recipe;
-            }
         }
 
         return null;
@@ -139,18 +130,16 @@ public final class ProcessingRecipeRegistry {
     }
 
     public static void addEtcherRecipe(EtcherRecipe recipe) {
-        if (recipe == null) {
+        if (recipe == null)
             throw new IllegalArgumentException("Etcher recipe cannot be null");
-        }
 
         etcherRecipes.add(recipe);
     }
 
     public static EtcherRecipe findEtcherRecipe(ItemStack top, ItemStack bottom, ItemStack middle) {
         for (EtcherRecipe recipe : etcherRecipes) {
-            if (recipe.matches(top, bottom, middle)) {
+            if (recipe.matches(top, bottom, middle))
                 return recipe;
-            }
         }
 
         return null;
@@ -158,9 +147,8 @@ public final class ProcessingRecipeRegistry {
 
     public static boolean isValidEtcherInput(int slot, ItemStack stack) {
         for (EtcherRecipe recipe : etcherRecipes) {
-            if (recipe.matchesSlot(slot, stack)) {
+            if (recipe.matchesSlot(slot, stack))
                 return true;
-            }
         }
 
         return false;
@@ -171,18 +159,16 @@ public final class ProcessingRecipeRegistry {
     }
 
     public static void addEnergizerRecipe(EnergizerRecipe recipe) {
-        if (recipe == null) {
+        if (recipe == null)
             throw new IllegalArgumentException("Energizer recipe cannot be null");
-        }
 
         energizerRecipes.add(recipe);
     }
 
     public static EnergizerRecipe findEnergizerRecipe(ItemStack input) {
         for (EnergizerRecipe recipe : energizerRecipes) {
-            if (recipe.matches(input)) {
+            if (recipe.matches(input))
                 return recipe;
-            }
         }
 
         return null;
@@ -277,22 +263,19 @@ public final class ProcessingRecipeRegistry {
 
         ItemStackMatcher input = ae(materials.certusQuartzCrystal());
         ItemStack output = aeStack(materials.certusQuartzCrystalCharged(), 1);
-        if (input != null && output != null) {
+        if (input != null && output != null)
             addEnergizerRecipe(new EnergizerRecipe(input, 12000, output));
-        }
     }
 
     private static void addAggregatorRecipeIfComplete(ItemStackMatcher inputA, ItemStackMatcher inputB,
             ItemStackMatcher inputC, ItemStack output) {
-        if (inputA != null && inputB != null && inputC != null && output != null) {
+        if (inputA != null && inputB != null && inputC != null && output != null)
             addAggregatorRecipe(new AggregatorRecipe(inputA, inputB, inputC, output));
-        }
     }
 
     private static void addCentrifugeRecipeIfComplete(ItemStackMatcher input, ItemStack output) {
-        if (input != null && output != null) {
+        if (input != null && output != null)
             addCentrifugeRecipe(new CentrifugeRecipe(input, output));
-        }
     }
 
     // Etcher top/bottom are fixed redstone/silicon, matching the upstream mod.
@@ -300,9 +283,8 @@ public final class ProcessingRecipeRegistry {
         ItemStackMatcher top = ore("dustRedstone");
         ItemStackMatcher bottom = ore("itemSilicon");
 
-        if (middle != null && output != null) {
+        if (middle != null && output != null)
             addEtcherRecipe(new EtcherRecipe(top, bottom, middle, output));
-        }
     }
 
     private static ItemStackMatcher ore(String oreName) {

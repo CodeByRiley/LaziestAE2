@@ -11,8 +11,7 @@ import net.minecraftforge.oredict.OreDictionary;
 /** Conversion between MineTweaker's item types and ours. */
 public final class MTHelper {
 
-    private MTHelper() {
-    }
+    private MTHelper() { }
 
     public static ItemStack toStack(IItemStack stack) {
         return stack == null ? null : (ItemStack)stack.getInternal();
@@ -22,15 +21,13 @@ public final class MTHelper {
     public static List<ItemStack> toStacks(IIngredient ingredient) {
         List<ItemStack> stacks = new ArrayList<ItemStack>();
 
-        if (ingredient == null) {
+        if (ingredient == null)
             return stacks;
-        }
 
         for (IItemStack item : ingredient.getItems()) {
             ItemStack stack = toStack(item);
-            if (stack != null) {
+            if (stack != null)
                 stacks.add(stack);
-            }
         }
 
         return stacks;
@@ -52,14 +49,12 @@ public final class MTHelper {
 
         @Override
         public boolean matches(ItemStack stack) {
-            if (stack == null || stack.stackSize <= 0) {
+            if (stack == null || stack.stackSize <= 0)
                 return false;
-            }
 
             for (ItemStack option : options) {
-                if (option.getItem() != stack.getItem()) {
+                if (option.getItem() != stack.getItem())
                     continue;
-                }
 
                 if (option.getItemDamage() == OreDictionary.WILDCARD_VALUE
                         || option.getItemDamage() == stack.getItemDamage()) {

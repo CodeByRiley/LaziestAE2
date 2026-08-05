@@ -36,15 +36,13 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
             if (worldObj != null) {
                 for (int i = 0; i < PATTERN_SLOTS; i++) {
                     ItemStack stack = patterns[i];
-                    if (!isPatternStack(stack)) {
+                    if (!isPatternStack(stack))
                         continue;
-                    }
 
                     ICraftingPatternDetails pattern =
                             ((ICraftingPatternItem)stack.getItem()).getPatternForItem(stack, worldObj);
-                    if (pattern != null && pattern.isCraftable()) {
+                    if (pattern != null && pattern.isCraftable())
                         patternCache.add(pattern);
-                    }
                 }
             }
         }
@@ -65,9 +63,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
         if (worldObj != null && !worldObj.isRemote) {
             TileMassAssemblerController controller =
                     MassAssemblerStructure.findConnectedController(worldObj, xCoord, yCoord, zCoord);
-            if (controller != null) {
+            if (controller != null)
                 controller.notifyPatternUpdate();
-            }
         }
     }
 
@@ -99,9 +96,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
         for (int i = 0; i < items.tagCount(); i++) {
             NBTTagCompound itemTag = items.getCompoundTagAt(i);
             int slot = itemTag.getByte("Slot") & 255;
-            if (slot >= 0 && slot < PATTERN_SLOTS) {
+            if (slot >= 0 && slot < PATTERN_SLOTS)
                 patterns[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-            }
         }
 
         patternCache = null;
@@ -119,9 +115,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
 
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
-        if (slot < 0 || slot >= PATTERN_SLOTS || patterns[slot] == null || amount <= 0) {
+        if (slot < 0 || slot >= PATTERN_SLOTS || patterns[slot] == null || amount <= 0)
             return null;
-        }
 
         ItemStack stack = patterns[slot];
         ItemStack result;
@@ -131,9 +126,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
             result = stack;
         } else {
             result = stack.splitStack(amount);
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 patterns[slot] = null;
-            }
         }
 
         onPatternsChanged();
@@ -142,9 +136,8 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
-        if (slot < 0 || slot >= PATTERN_SLOTS) {
+        if (slot < 0 || slot >= PATTERN_SLOTS)
             return null;
-        }
 
         ItemStack stack = patterns[slot];
         patterns[slot] = null;
@@ -153,14 +146,12 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if (slot < 0 || slot >= PATTERN_SLOTS) {
+        if (slot < 0 || slot >= PATTERN_SLOTS)
             return;
-        }
 
         patterns[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
             stack.stackSize = getInventoryStackLimit();
-        }
 
         onPatternsChanged();
     }
@@ -189,12 +180,10 @@ public class TileMassAssemblerPatternProvider extends TileMassAssemblerPart impl
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() { }
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() { }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {

@@ -59,28 +59,23 @@ public class ContainerPatternProvider extends Container {
             original = stack.copy();
 
             if (index < patternSlots) {
-                if (!mergeItemStack(stack, patternSlots, inventorySlots.size(), true)) {
+                if (!mergeItemStack(stack, patternSlots, inventorySlots.size(), true))
                     return null;
-                }
             } else {
-                if (!TileMassAssemblerPatternProvider.isPatternStack(stack)) {
+                if (!TileMassAssemblerPatternProvider.isPatternStack(stack))
                     return null;
-                }
 
-                if (!mergeItemStack(stack, 0, patternSlots, false)) {
+                if (!mergeItemStack(stack, 0, patternSlots, false))
                     return null;
-                }
             }
 
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 slot.putStack(null);
-            } else {
+            else
                 slot.onSlotChanged();
-            }
 
-            if (stack.stackSize == original.stackSize) {
+            if (stack.stackSize == original.stackSize)
                 return null;
-            }
 
             slot.onPickupFromSlot(player, stack);
         }

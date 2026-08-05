@@ -57,8 +57,7 @@ public abstract class TileNetworkDevice extends TilePowered implements ISideConf
     }
 
     @Override
-    public void setAutoExporting(boolean exporting) {
-    }
+    public void setAutoExporting(boolean exporting) { }
 
     @Override
     public void writeToNBT(NBTTagCompound tag) {
