@@ -1,7 +1,9 @@
 package com.codebyriley.laziestae2.integration.tooltip;
 
+import com.codebyriley.laziestae2.tile.base.IRedstoneConfigurable;
 import com.codebyriley.laziestae2.tile.base.ISideConfigurable;
 import com.codebyriley.laziestae2.tile.base.MachineSideMode;
+import com.codebyriley.laziestae2.tile.base.RedstoneMode;
 import com.codebyriley.laziestae2.tile.base.SideConfiguration;
 import java.util.List;
 import net.minecraft.tileentity.TileEntity;
@@ -19,17 +21,15 @@ public final class SideConfigTooltip {
     /** Widget pad index to the label used for it in the machine GUI. */
     private static final String[] WIDGET_KEYS = { "up", "left", "front", "right", "down", "back" };
 
-    private SideConfigTooltip() {
-    }
+    private SideConfigTooltip() { }
 
     public static boolean supports(TileEntity tile) {
         return tile instanceof ISideConfigurable;
     }
 
     public static void appendLines(TileEntity tile, int sideHit, List<String> lines) {
-        if (!supports(tile)) {
+        if (!supports(tile))
             return;
-        }
 
         ISideConfigurable configurable = (ISideConfigurable)tile;
 
@@ -40,16 +40,22 @@ public final class SideConfigTooltip {
                     StatCollector.translateToLocal(mode.getUnlocalizedName())));
         }
 
-        if (configurable.supportsAutoExport()) {
+        if (configurable.supportsAutoExport())
             lines.add(TooltipText.format("auto_export", TooltipText.onOff(configurable.isAutoExporting())));
+
+        if (tile instanceof IRedstoneConfigurable) {
+            IRedstoneConfigurable redstone = (IRedstoneConfigurable)tile;
+            if (redstone.supportsRedstoneControl() && redstone.getRedstoneMode() != RedstoneMode.IGNORE) {
+                lines.add(TooltipText.format("redstone",
+                        StatCollector.translateToLocal(redstone.getRedstoneMode().getUnlocalizedName())));
+            }
         }
     }
 
     private static String faceKey(ISideConfigurable configurable, int side) {
         for (int widget = 0; widget < WIDGET_KEYS.length; widget++) {
-            if (configurable.getWidgetSide(widget) == side) {
+            if (configurable.getWidgetSide(widget) == side)
                 return "gui.laziestae2.side." + WIDGET_KEYS[widget];
-            }
         }
 
         return "gui.laziestae2.side.back";

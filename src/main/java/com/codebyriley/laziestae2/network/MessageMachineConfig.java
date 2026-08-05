@@ -1,7 +1,9 @@
 package com.codebyriley.laziestae2.network;
 
+import com.codebyriley.laziestae2.tile.base.IRedstoneConfigurable;
 import com.codebyriley.laziestae2.tile.base.ISideConfigurable;
 import com.codebyriley.laziestae2.tile.base.MachineSideMode;
+import com.codebyriley.laziestae2.tile.base.RedstoneMode;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -15,6 +17,7 @@ public class MessageMachineConfig implements IMessage {
 
     public static final int MODE_CYCLE_SIDE = 0;
     public static final int MODE_TOGGLE_EXPORT = 1;
+    public static final int MODE_CYCLE_REDSTONE = 2;
 
     private int x;
     private int y;
@@ -23,8 +26,7 @@ public class MessageMachineConfig implements IMessage {
     private int side;
     private boolean backwards;
 
-    public MessageMachineConfig() {
-    }
+    public MessageMachineConfig() { }
 
     public MessageMachineConfig(net.minecraft.tileentity.TileEntity tile, int mode, int side, boolean backwards) {
         this.x = tile.xCoord;
@@ -60,20 +62,17 @@ public class MessageMachineConfig implements IMessage {
         @Override
         public IMessage onMessage(MessageMachineConfig message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            if (player == null || player.worldObj == null) {
+            if (player == null || player.worldObj == null)
                 return null;
-            }
 
             TileEntity tile = player.worldObj.getTileEntity(message.x, message.y, message.z);
-            if (!(tile instanceof ISideConfigurable)) {
+            if (!(tile instanceof ISideConfigurable))
                 return null;
-            }
 
             // Covers reach and ME security in one check. Every side-configurable tile
             // is also an inventory, which is where that check lives.
-            if (tile instanceof IInventory && !((IInventory)tile).isUseableByPlayer(player)) {
+            if (tile instanceof IInventory && !((IInventory)tile).isUseableByPlayer(player))
                 return null;
-            }
 
             ISideConfigurable machine = (ISideConfigurable)tile;
 
@@ -82,6 +81,12 @@ public class MessageMachineConfig implements IMessage {
                 machine.setSideMode(message.side, message.backwards ? current.prev() : current.next());
             } else if (message.mode == MODE_TOGGLE_EXPORT && machine.supportsAutoExport()) {
                 machine.setAutoExporting(!machine.isAutoExporting());
+            } else if (message.mode == MODE_CYCLE_REDSTONE && tile instanceof IRedstoneConfigurable) {
+                IRedstoneConfigurable redstone = (IRedstoneConfigurable)tile;
+                if (redstone.supportsRedstoneControl()) {
+                    RedstoneMode current = redstone.getRedstoneMode();
+                    redstone.setRedstoneMode(message.backwards ? current.prev() : current.next());
+                }
             }
 
             return null;

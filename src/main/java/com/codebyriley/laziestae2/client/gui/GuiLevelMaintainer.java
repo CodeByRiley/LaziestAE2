@@ -12,7 +12,11 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-public class GuiLevelMaintainer extends GuiContainer {
+public class GuiLevelMaintainer extends GuiContainer implements ISideIoGui {
+
+    // Matches the tab on the other machine GUIs.
+    private static final int TAB_X = 176;
+    private static final int TAB_Y = 60;
 
     // Measured from level_maintainer.png. Per row (pitch 20, first row y=21):
     // quantity well x38-82, its submit x84-96, batch well x101-145, submit x147-159.
@@ -32,23 +36,30 @@ public class GuiLevelMaintainer extends GuiContainer {
             new net.minecraft.util.ResourceLocation(
                     com.codebyriley.laziestae2.Constants.MOD_ID, "textures/gui/component/submit.png");
 
-    // submit.png is 39x13: normal (0,0), disabled (13,0), hovered (26,0).
-    private static final int SUBMIT_TEX_WIDTH = 39;
-    private static final int SUBMIT_TEX_HEIGHT = 13;
-    private static final int SUBMIT_SIZE = 13;
+    // submit.png is 48x16: normal (0,0), disabled (16,0), hovered (32,0).
+    private static final int SUBMIT_TEX_WIDTH = 48;
+    private static final int SUBMIT_TEX_HEIGHT = 16;
+    private static final int SUBMIT_SIZE = 16;
 
     private final TileLevelMaintainer tile;
     private final MachineGuiDefinition definition;
 
     private final GuiTextField[] qtyFields = new GuiTextField[TileLevelMaintainer.REQ_COUNT];
     private final GuiTextField[] batchFields = new GuiTextField[TileLevelMaintainer.REQ_COUNT];
+    private final SideIoFlyout sideIo;
 
     public GuiLevelMaintainer(InventoryPlayer playerInventory, TileLevelMaintainer tile) {
         super(new ContainerLevelMaintainer(playerInventory, tile));
         this.tile = tile;
         this.definition = MachineGuiDefinition.LEVEL_MAINTAINER;
+        this.sideIo = new SideIoFlyout(new SideIoWidget(tile), "level_maintainer", TAB_X, TAB_Y);
         this.xSize = definition.getWidth();
         this.ySize = definition.getHeight();
+    }
+
+    @Override
+    public java.awt.Rectangle getSideIoBounds() {
+        return sideIo.getBounds(guiLeft, guiTop);
     }
 
     @Override
@@ -83,35 +94,30 @@ public class GuiLevelMaintainer extends GuiContainer {
             qtyFields[i].updateCursorCounter();
             batchFields[i].updateCursorCounter();
 
-            if (!qtyFields[i].isFocused()) {
+            if (!qtyFields[i].isFocused())
                 qtyFields[i].setText(Long.toString(tile.getRequestQuantity(i)));
-            }
 
-            if (!batchFields[i].isFocused()) {
+            if (!batchFields[i].isFocused())
                 batchFields[i].setText(Long.toString(tile.getRequestBatch(i)));
-            }
         }
     }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
         for (int i = 0; i < TileLevelMaintainer.REQ_COUNT; i++) {
-            if (handleFieldKey(qtyFields[i], i, MessageLevelMaintainerRequest.MODE_QUANTITY, typedChar, keyCode)) {
+            if (handleFieldKey(qtyFields[i], i, MessageLevelMaintainerRequest.MODE_QUANTITY, typedChar, keyCode))
                 return;
-            }
 
-            if (handleFieldKey(batchFields[i], i, MessageLevelMaintainerRequest.MODE_BATCH, typedChar, keyCode)) {
+            if (handleFieldKey(batchFields[i], i, MessageLevelMaintainerRequest.MODE_BATCH, typedChar, keyCode))
                 return;
-            }
         }
 
         super.keyTyped(typedChar, keyCode);
     }
 
     private boolean handleFieldKey(GuiTextField field, int slot, int mode, char typedChar, int keyCode) {
-        if (!field.isFocused()) {
+        if (!field.isFocused())
             return false;
-        }
 
         if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER) {
             submitField(field, slot, mode);
@@ -125,9 +131,8 @@ public class GuiLevelMaintainer extends GuiContainer {
         }
 
         // Digits only; let the field handle navigation/backspace itself.
-        if (Character.isDigit(typedChar) || typedChar < ' ') {
+        if (Character.isDigit(typedChar) || typedChar < ' ')
             field.textboxKeyTyped(typedChar, keyCode);
-        }
 
         return true;
     }
@@ -140,15 +145,21 @@ public class GuiLevelMaintainer extends GuiContainer {
             return;
         }
 
-        if (value < 0L) {
+        if (value < 0L)
             return;
-        }
 
         LazyNetwork.CHANNEL.sendToServer(new MessageLevelMaintainerRequest(tile, slot, mode, value));
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) {
+        if (sideIo.handleClick(mouseX, mouseY, button, guiLeft, guiTop)) {
+            mc.getSoundHandler().playSound(
+                    net.minecraft.client.audio.PositionedSoundRecord.func_147674_a(
+                            new net.minecraft.util.ResourceLocation("gui.button.press"), 1F));
+            return;
+        }
+
         if (button == 0) {
             for (int i = 0; i < TileLevelMaintainer.REQ_COUNT; i++) {
                 if (isOverSubmit(i, false, mouseX, mouseY)) {
@@ -173,8 +184,33 @@ public class GuiLevelMaintainer extends GuiContainer {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        int left = (width - xSize) / 2;
+        int top = (height - ySize) / 2;
+        sideIo.update(mouseX, mouseY, left, top);
+
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        java.util.List<String> flyoutTooltip = sideIo.getTooltip(mouseX, mouseY, left, top);
+        if (flyoutTooltip != null) {
+            func_146283_a(flyoutTooltip, mouseX, mouseY);
+            return;
+        }
+
         drawFieldTooltip(mouseX, mouseY);
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int button, long timeSinceClick) {
+        sideIo.handleDrag(mouseX, mouseY, guiLeft, guiTop);
+        super.mouseClickMove(mouseX, mouseY, button, timeSinceClick);
+    }
+
+    @Override
+    protected void mouseMovedOrUp(int mouseX, int mouseY, int state) {
+        if (state == 0)
+            sideIo.handleRelease(xSize, ySize);
+
+        super.mouseMovedOrUp(mouseX, mouseY, state);
     }
 
     /**
@@ -230,11 +266,10 @@ public class GuiLevelMaintainer extends GuiContainer {
         int y = guiTop + SUBMIT_Y_BASE + FIELD_Y_STEP * row;
 
         int state;
-        if (!isValidValue(field)) {
+        if (!isValidValue(field))
             state = 1;
-        } else {
+        else
             state = isOverSubmit(row, batch, mouseX, mouseY) ? 2 : 0;
-        }
 
         mc.getTextureManager().bindTexture(SUBMIT_TEXTURE);
         func_146110_a(x, y, state * SUBMIT_SIZE, 0F, SUBMIT_SIZE, SUBMIT_SIZE,
@@ -258,6 +293,13 @@ public class GuiLevelMaintainer extends GuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        // The tab lives outside the panel, so undo the layer's origin translation.
+        GL11.glPushMatrix();
+        GL11.glTranslatef(-guiLeft, -guiTop, 0F);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        sideIo.draw(mc, fontRendererObj, guiLeft, guiTop);
+        GL11.glPopMatrix();
+
         fontRendererObj.drawString(StatCollector.translateToLocal(definition.getTitleKey()), 8, 6, 4210752);
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 94, 4210752);
 

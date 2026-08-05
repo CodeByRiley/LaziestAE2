@@ -26,9 +26,8 @@ public abstract class TileMachine extends TilePowered
     protected TileMachine(double energyCapacity, MachineGuiDefinition guiDefinition) {
         super(energyCapacity);
 
-        if (guiDefinition == null) {
+        if (guiDefinition == null)
             throw new IllegalArgumentException("Machine GUI definition cannot be null");
-        }
 
         this.guiDefinition = guiDefinition;
         this.inventory = new ItemStack[guiDefinition.getSlotCount()];
@@ -90,14 +89,12 @@ public abstract class TileMachine extends TilePowered
     // Pushes finished output into inventories on faces configured to output.
     private void doAutoExport() {
         for (int slot = 0; slot < inventory.length; slot++) {
-            if (!guiDefinition.isOutputSlot(slot) || inventory[slot] == null) {
+            if (!guiDefinition.isOutputSlot(slot) || inventory[slot] == null)
                 continue;
-            }
 
             for (int side = 0; side < SideConfiguration.FACE_COUNT; side++) {
-                if (!sides.getMode(side).allowsOutput() || inventory[slot] == null) {
+                if (!sides.getMode(side).allowsOutput() || inventory[slot] == null)
                     continue;
-                }
 
                 ItemStack remainder = com.codebyriley.laziestae2.inventory.AdjacentInventoryHelper
                         .insertIntoSide(worldObj, xCoord, yCoord, zCoord, side, inventory[slot]);
@@ -115,6 +112,13 @@ public abstract class TileMachine extends TilePowered
 
     @Override
     protected void updateServer() {
+        // A redstone-disabled machine holds everything, including auto-export.
+        // Progress is kept so toggling the signal resumes rather than restarts.
+        if (!isRedstoneActive()) {
+            setWorking(false);
+            return;
+        }
+
         if (autoExporting && ++autoExportTimer >= AUTO_EXPORT_INTERVAL) {
             autoExportTimer = 0;
             doAutoExport();
@@ -170,9 +174,8 @@ public abstract class TileMachine extends TilePowered
 
     public int getScaledWork(int scale) {
         int maxWork = getMaxWork();
-        if (scale <= 0 || maxWork <= 0) {
+        if (scale <= 0 || maxWork <= 0)
             return 0;
-        }
 
         return Math.min(scale, work * scale / maxWork);
     }
@@ -275,9 +278,8 @@ public abstract class TileMachine extends TilePowered
         for (int i = 0; i < items.tagCount(); i++) {
             NBTTagCompound itemTag = items.getCompoundTagAt(i);
             int slot = itemTag.getByte("Slot") & 255;
-            if (slot >= 0 && slot < inventory.length) {
+            if (slot >= 0 && slot < inventory.length)
                 inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-            }
         }
     }
 
@@ -293,9 +295,8 @@ public abstract class TileMachine extends TilePowered
 
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
-        if (!isValidSlot(slot) || inventory[slot] == null || amount <= 0) {
+        if (!isValidSlot(slot) || inventory[slot] == null || amount <= 0)
             return null;
-        }
 
         ItemStack stack = inventory[slot];
         if (stack.stackSize <= amount) {
@@ -305,9 +306,8 @@ public abstract class TileMachine extends TilePowered
         }
 
         ItemStack split = stack.splitStack(amount);
-        if (stack.stackSize == 0) {
+        if (stack.stackSize == 0)
             inventory[slot] = null;
-        }
 
         markDirty();
         return split;
@@ -315,9 +315,8 @@ public abstract class TileMachine extends TilePowered
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
-        if (!isValidSlot(slot)) {
+        if (!isValidSlot(slot))
             return null;
-        }
 
         ItemStack stack = inventory[slot];
         inventory[slot] = null;
@@ -326,16 +325,14 @@ public abstract class TileMachine extends TilePowered
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if (!isValidSlot(slot)) {
+        if (!isValidSlot(slot))
             return;
-        }
 
         inventory[slot] = stack;
 
         int limit = guiDefinition.isUpgradeSlot(slot) ? MAX_UPGRADES : getInventoryStackLimit();
-        if (stack != null && stack.stackSize > limit) {
+        if (stack != null && stack.stackSize > limit)
             stack.stackSize = limit;
-        }
 
         markDirty();
     }
@@ -367,26 +364,21 @@ public abstract class TileMachine extends TilePowered
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() { }
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() { }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if (!isValidSlot(slot) || guiDefinition.isOutputSlot(slot)) {
+        if (!isValidSlot(slot) || guiDefinition.isOutputSlot(slot))
             return false;
-        }
 
-        if (guiDefinition.isUpgradeSlot(slot)) {
+        if (guiDefinition.isUpgradeSlot(slot))
             return isAccelerationCard(stack);
-        }
 
-        if (preventsDuplicateInputs() && isHeldInAnotherInputSlot(slot, stack)) {
+        if (preventsDuplicateInputs() && isHeldInAnotherInputSlot(slot, stack))
             return false;
-        }
 
         return isValidInput(slot, stack);
     }
@@ -401,9 +393,8 @@ public abstract class TileMachine extends TilePowered
     }
 
     private boolean isHeldInAnotherInputSlot(int slot, ItemStack stack) {
-        if (stack == null) {
+        if (stack == null)
             return false;
-        }
 
         for (int other = 0; other < inventory.length; other++) {
             if (other == slot
@@ -437,9 +428,8 @@ public abstract class TileMachine extends TilePowered
     /** Number of installed acceleration cards, capped at {@link #MAX_UPGRADES}. */
     public int getUpgradeCount() {
         int slot = guiDefinition.getUpgradeSlotIndex();
-        if (slot == -1) {
+        if (slot == -1)
             return 0;
-        }
 
         ItemStack stack = getStackInSlot(slot);
         return stack == null ? 0 : Math.min(stack.stackSize, MAX_UPGRADES);
@@ -454,22 +444,19 @@ public abstract class TileMachine extends TilePowered
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
         MachineSideMode mode = getSideMode(side);
-        if (mode == MachineSideMode.NONE) {
+        if (mode == MachineSideMode.NONE)
             return new int[0];
-        }
 
         int count = 0;
         int[] slots = new int[inventory.length];
 
         for (int slot = 0; slot < inventory.length; slot++) {
-            if (guiDefinition.isUpgradeSlot(slot)) {
+            if (guiDefinition.isUpgradeSlot(slot))
                 continue;
-            }
 
             boolean output = guiDefinition.isOutputSlot(slot);
-            if ((output && mode.allowsOutput()) || (!output && mode.allowsInput())) {
+            if ((output && mode.allowsOutput()) || (!output && mode.allowsInput()))
                 slots[count++] = slot;
-            }
         }
 
         int[] trimmed = new int[count];
@@ -492,18 +479,15 @@ public abstract class TileMachine extends TilePowered
     }
 
     protected boolean canAcceptOutput(ItemStack output, int outputSlot) {
-        if (output == null) {
+        if (output == null)
             return false;
-        }
 
         ItemStack existing = getStackInSlot(outputSlot);
-        if (existing == null) {
+        if (existing == null)
             return true;
-        }
 
-        if (!existing.isItemEqual(output) || !ItemStack.areItemStackTagsEqual(existing, output)) {
+        if (!existing.isItemEqual(output) || !ItemStack.areItemStackTagsEqual(existing, output))
             return false;
-        }
 
         int maxStackSize = Math.min(existing.getMaxStackSize(), getInventoryStackLimit());
         return existing.stackSize + output.stackSize <= maxStackSize;

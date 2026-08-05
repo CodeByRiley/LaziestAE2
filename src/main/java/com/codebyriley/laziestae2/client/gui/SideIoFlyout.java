@@ -22,18 +22,30 @@ public class SideIoFlyout extends Gui {
     private static final int MARGIN = 6;
     private static final int TITLE_HEIGHT = 12;
 
-    /** Collapsed the tab is about the size of an inventory slot. */
-    private static final int COLLAPSED_MARGIN = 1;
+    /**
+     * Collapsed the tab is about the size of an inventory slot. The margin has to
+     * clear the panel frame, which is 2px of outline and bevel, or the pad drawn
+     * inside it overlaps the border.
+     */
+    private static final int COLLAPSED_MARGIN = 3;
     private static final int COLLAPSED_WIDTH = SideIoWidget.SIZE + COLLAPSED_MARGIN * 2;
     private static final int COLLAPSED_HEIGHT = SideIoWidget.SIZE + COLLAPSED_MARGIN * 2;
 
-    private static final int BORDER_COLOR = 0xFF000000;
-    private static final int PANEL_COLOR = 0xFFC6C6C6;
-    private static final int SHADE_COLOR = 0xFF8B8B8B;
     private static final int TEXT_COLOR = 0x404040;
+
+    // flyout_panel.png is an 18x18 nine-patch of 6x6 tiles: corners at the grid
+    // corners, edges between them, and a flat centre. Edges and centre stretch.
+    private static final net.minecraft.util.ResourceLocation PANEL_TEXTURE =
+            new net.minecraft.util.ResourceLocation(
+                    com.codebyriley.laziestae2.Constants.MOD_ID, "textures/gui/component/flyout_panel.png");
+    private static final int PANEL_TILE = 6;
+    private static final int PANEL_TEX_SIZE = 18;
 
     /** Fraction of the open/close transition covered per frame. */
     private static final float ANIMATION_STEP = 0.4F;
+
+    /** How far the cursor must move while held before a click becomes a drag. */
+    private static final int DRAG_THRESHOLD = 3;
 
     /** Remembers where each GUI's tab was dragged to, for the rest of the session. */
     private static final java.util.Map<String, int[]> POSITIONS = new java.util.HashMap<String, int[]>();
@@ -55,6 +67,10 @@ public class SideIoFlyout extends Gui {
     private float progress;
 
     private boolean dragging;
+    /** Mouse is held on the tab, but has not moved far enough to be a drag yet. */
+    private boolean dragArmed;
+    private int pressX;
+    private int pressY;
     private int dragOffsetX;
     private int dragOffsetY;
 
@@ -66,13 +82,20 @@ public class SideIoFlyout extends Gui {
         this.anchorX = saved != null ? saved[0] : anchorX;
         this.anchorY = saved != null ? saved[1] : anchorY;
 
-        if (saved != null) {
+        if (saved != null)
             this.edge = Edge.values()[saved[2]];
-        }
 
-        // Two controls side by side when the tile has an auto-export toggle.
-        int controls = widget.hasAutoExport() ? 2 : 1;
-        this.expandedWidth = MARGIN * 2 + CONTROL_SIZE * controls + (controls - 1) * MARGIN;
+        // Controls are packed at their own drawn width, not in uniform slots, so
+        // the gap between them stays MARGIN whatever size each sprite is.
+        int contentWidth = CONTROL_SIZE;
+
+        if (widget.hasAutoExport())
+            contentWidth += MARGIN + Math.round(SideIoWidget.AUTO_EXPORT_SIZE * CONTROL_SCALE);
+
+        if (widget.hasRedstoneControl())
+            contentWidth += MARGIN + Math.round(SideIoWidget.REDSTONE_SIZE * CONTROL_SCALE);
+
+        this.expandedWidth = MARGIN * 2 + contentWidth;
         this.expandedHeight = MARGIN * 2 + TITLE_HEIGHT + CONTROL_SIZE;
     }
 
@@ -110,6 +133,8 @@ public class SideIoFlyout extends Gui {
     }
 
     public void update(int mouseX, int mouseY, int guiLeft, int guiTop) {
+        widget.setMousePosition(mouseX, mouseY);
+
         // While being dragged the tab stays collapsed, so it is easy to place.
         open = !dragging && isOverTab(mouseX, mouseY, guiLeft, guiTop);
         progress = Math.max(0F, Math.min(1F, progress + (open ? ANIMATION_STEP : -ANIMATION_STEP)));
@@ -122,11 +147,25 @@ public class SideIoFlyout extends Gui {
 
     /** Keeps the controls in step with the panel as it grows and shrinks. */
     private void layoutControls(int guiLeft, int guiTop) {
+        int padSize = widget.getScaledSize();
         int padX = getPanelX() + MARGIN;
-        int padY = getPanelY() + getHeight() - CONTROL_SIZE - MARGIN;
-        int exportX = padX + CONTROL_SIZE + MARGIN;
+        int padY = getPanelY() + getHeight() - padSize - MARGIN;
 
-        widget.setPosition(padX, padY, exportX, padY);
+        // Controls sit in a row after the pad, each taking only its own width and
+        // centred against the taller pad. Any control the tile lacks is skipped.
+        int exportSize = widget.getScaledAutoExportSize();
+        int redstoneSize = widget.getScaledRedstoneSize();
+
+        int next = padX + padSize + MARGIN;
+        int exportX = next;
+
+        if (widget.hasAutoExport())
+            next += exportSize + MARGIN;
+
+        widget.setPosition(
+                padX, padY,
+                exportX, padY + (padSize - exportSize) / 2,
+                next, padY + (padSize - redstoneSize) / 2);
     }
 
     public void draw(Minecraft mc, FontRenderer font, int guiLeft, int guiTop) {
@@ -137,9 +176,9 @@ public class SideIoFlyout extends Gui {
 
         GL11.glDisable(GL11.GL_LIGHTING);
 
-        drawRect(x, y, x + width, y + height, BORDER_COLOR);
-        drawRect(x + 1, y + 1, x + width - 1, y + height - 1, PANEL_COLOR);
-        drawRect(x + 1, y + height - 2, x + width - 1, y + height - 1, SHADE_COLOR);
+        GL11.glColor4f(1F, 1F, 1F, 1F);
+        mc.getTextureManager().bindTexture(PANEL_TEXTURE);
+        drawPanel(x, y, width, height);
 
         if (isOpen()) {
             font.drawString(StatCollector.translateToLocal("gui.laziestae2.side_io.title"),
@@ -161,6 +200,49 @@ public class SideIoFlyout extends Gui {
         GL11.glEnable(GL11.GL_LIGHTING);
     }
 
+    /**
+     * Draws the panel from the nine-patch. Corners keep their size, the edges
+     * stretch along their run, and the centre fills what is left, so the same
+     * sheet serves the collapsed tab and every step of the open animation.
+     */
+    private void drawPanel(int x, int y, int width, int height) {
+        int tile = PANEL_TILE;
+        int midWidth = Math.max(0, width - tile * 2);
+        int midHeight = Math.max(0, height - tile * 2);
+        int right = x + width - tile;
+        int bottom = y + height - tile;
+        int far = PANEL_TEX_SIZE - tile;
+
+        drawTile(x, y, 0, 0, 1F, 1F);
+        drawTile(right, y, far, 0, 1F, 1F);
+        drawTile(x, bottom, 0, far, 1F, 1F);
+        drawTile(right, bottom, far, far, 1F, 1F);
+
+        if (midWidth > 0) {
+            float scaleX = (float)midWidth / tile;
+            drawTile(x + tile, y, tile, 0, scaleX, 1F);
+            drawTile(x + tile, bottom, tile, far, scaleX, 1F);
+        }
+
+        if (midHeight > 0) {
+            float scaleY = (float)midHeight / tile;
+            drawTile(x, y + tile, 0, tile, 1F, scaleY);
+            drawTile(right, y + tile, far, tile, 1F, scaleY);
+        }
+
+        if (midWidth > 0 && midHeight > 0)
+            drawTile(x + tile, y + tile, tile, tile, (float)midWidth / tile, (float)midHeight / tile);
+    }
+
+    /** Blits one 6x6 tile, stretched about its top-left corner. */
+    private void drawTile(int x, int y, int u, int v, float scaleX, float scaleY) {
+        GL11.glPushMatrix();
+        GL11.glTranslatef(x, y, 0F);
+        GL11.glScalef(scaleX, scaleY, 1F);
+        func_146110_a(0, 0, u, v, PANEL_TILE, PANEL_TILE, PANEL_TEX_SIZE, PANEL_TEX_SIZE);
+        GL11.glPopMatrix();
+    }
+
     /** Tooltip lines for whatever the cursor is over, or null. */
     public List<String> getTooltip(int mouseX, int mouseY, int guiLeft, int guiTop) {
         if (!isOpen()) {
@@ -173,32 +255,34 @@ public class SideIoFlyout extends Gui {
         }
 
         int face = widget.getHoveredFace(mouseX, mouseY, guiLeft, guiTop);
-        if (face >= 0) {
+        if (face >= 0)
             return widget.getFaceTooltip(face);
-        }
 
-        if (widget.isOverAutoExport(mouseX, mouseY, guiLeft, guiTop)) {
+        if (widget.isOverAutoExport(mouseX, mouseY, guiLeft, guiTop))
             return Collections.singletonList(widget.getAutoExportTooltip());
-        }
+
+        if (widget.isOverRedstone(mouseX, mouseY, guiLeft, guiTop))
+            return widget.getRedstoneTooltip();
 
         return null;
     }
 
     /**
      * Consumes clicks on the tab. Hitting a control operates it; anywhere else
-     * starts a drag.
+     * arms a drag, which only starts once the cursor actually moves so that a
+     * plain click leaves the panel open.
      */
     public boolean handleClick(int mouseX, int mouseY, int button, int guiLeft, int guiTop) {
-        if (!isOverTab(mouseX, mouseY, guiLeft, guiTop)) {
+        if (!isOverTab(mouseX, mouseY, guiLeft, guiTop))
             return false;
-        }
 
-        if (isOpen() && widget.handleClick(mouseX, mouseY, button, guiLeft, guiTop)) {
+        if (isOpen() && widget.handleClick(mouseX, mouseY, button, guiLeft, guiTop))
             return true;
-        }
 
         if (button == 0) {
-            dragging = true;
+            dragArmed = true;
+            pressX = mouseX;
+            pressY = mouseY;
             dragOffsetX = mouseX - (guiLeft + anchorX);
             dragOffsetY = mouseY - (guiTop + anchorY);
         }
@@ -208,7 +292,14 @@ public class SideIoFlyout extends Gui {
 
     public void handleDrag(int mouseX, int mouseY, int guiLeft, int guiTop) {
         if (!dragging) {
-            return;
+            if (!dragArmed)
+                return;
+
+            // Below the threshold this is still a click being held, not a drag.
+            if (Math.abs(mouseX - pressX) < DRAG_THRESHOLD && Math.abs(mouseY - pressY) < DRAG_THRESHOLD)
+                return;
+
+            dragging = true;
         }
 
         anchorX = mouseX - guiLeft - dragOffsetX;
@@ -217,9 +308,11 @@ public class SideIoFlyout extends Gui {
 
     /** On release the tab snaps flush against the nearest edge of the panel. */
     public void handleRelease(int guiWidth, int guiHeight) {
-        if (!dragging) {
+        dragArmed = false;
+
+        // A press that never became a drag leaves the tab where it was.
+        if (!dragging)
             return;
-        }
 
         dragging = false;
         snapToEdge(guiWidth, guiHeight);

@@ -47,6 +47,12 @@ public abstract class TileMassAssemblerPart extends TilePowered implements IMass
         return 0D;
     }
 
+    /** Parts do no work of their own; the controller carries the redstone control. */
+    @Override
+    public boolean supportsRedstoneControl() {
+        return false;
+    }
+
     @Override
     public MassAssemblerPartType getPartType() {
         return partType;
@@ -66,14 +72,12 @@ public abstract class TileMassAssemblerPart extends TilePowered implements IMass
     }
 
     /** Hook for parts that cache structure-derived state. */
-    protected void onActiveChanged() {
-    }
+    protected void onActiveChanged() { }
 
     /** Records which controller scanned this part into its structure. */
     public void setControllerPosition(int x, int y, int z) {
-        if (controllerX == x && controllerY == y && controllerZ == z) {
+        if (controllerX == x && controllerY == y && controllerZ == z)
             return;
-        }
 
         controllerX = x;
         controllerY = y;
@@ -87,9 +91,8 @@ public abstract class TileMassAssemblerPart extends TilePowered implements IMass
      * than the present moment, so it is re-checked against the world.
      */
     public TileMassAssemblerController getController() {
-        if (worldObj == null || controllerY < 0) {
+        if (worldObj == null || controllerY < 0)
             return null;
-        }
 
         net.minecraft.tileentity.TileEntity tile = worldObj.getTileEntity(controllerX, controllerY, controllerZ);
         return tile instanceof TileMassAssemblerController ? (TileMassAssemblerController)tile : null;
@@ -129,8 +132,7 @@ public abstract class TileMassAssemblerPart extends TilePowered implements IMass
         boolean wasActive = active;
         active = tag.getBoolean("Active");
 
-        if (wasActive != active && worldObj != null) {
+        if (wasActive != active && worldObj != null)
             worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
-        }
     }
 }

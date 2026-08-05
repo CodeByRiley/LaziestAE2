@@ -30,7 +30,8 @@ public class GuiMassAssembler extends GuiContainer {
     private static final int PROGRESS_HEIGHT = 2;
 
     private static final int PAGE_TEXT_X = 108;
-    private static final int PAGE_TEXT_Y = 108;
+    // Sits under the nav row, above the inventory label at y=123.
+    private static final int PAGE_TEXT_Y = 112;
 
     // Recessed well in the texture reserved for the pattern search field.
     private static final int SEARCH_X = 80;
@@ -53,22 +54,25 @@ public class GuiMassAssembler extends GuiContainer {
             new net.minecraft.util.ResourceLocation(
                     com.codebyriley.laziestae2.Constants.MOD_ID, "textures/gui/component/next_prev.png");
 
-    // next_prev.png is 58x33: prev (0,0,18,11), next (18,0,18,11),
-    // first (36,0,11,11), last (47,0,11,11). Rows are normal / disabled / hovered.
-    private static final int NAV_TEX_WIDTH = 58;
-    private static final int NAV_TEX_HEIGHT = 33;
-    private static final int NAV_BUTTON_HEIGHT = 11;
-    private static final int NAV_X = 108;
-    private static final int NAV_Y = 93;
+    // next_prev.png is 80x48: prev (0,0,24,16), next (24,0,24,16),
+    // first (48,0,16,16), last (64,0,16,16). Rows are normal / disabled / hovered.
+    private static final int NAV_TEX_WIDTH = 80;
+    private static final int NAV_TEX_HEIGHT = 48;
+    private static final int NAV_BUTTON_HEIGHT = 16;
+
+    // The row is 83px wide, so it starts far enough left to keep a margin inside
+    // the 176px panel. Its top lines up with the status bars to its left.
+    private static final int NAV_X = 85;
+    private static final int NAV_Y = 94;
 
     private static final int STATE_NORMAL = 0;
     private static final int STATE_DISABLED = 1;
     private static final int STATE_HOVERED = 2;
 
     // Widget-relative x, width, and source u for first / prev / next / last.
-    private static final int[] NAV_X_OFFSET = { 0, 12, 31, 50 };
-    private static final int[] NAV_WIDTH = { 11, 18, 18, 11 };
-    private static final int[] NAV_U = { 36, 0, 18, 47 };
+    private static final int[] NAV_X_OFFSET = { 0, 17, 42, 67 };
+    private static final int[] NAV_WIDTH = { 16, 24, 24, 16 };
+    private static final int[] NAV_U = { 48, 0, 24, 64 };
 
     private static final String[] NAV_TOOLTIPS = {
             "gui.laziestae2.page_first",
@@ -134,9 +138,8 @@ public class GuiMassAssembler extends GuiContainer {
      * overlay because GuiContainer's per-slot hook is private in 1.7.10.
      */
     private void drawSearchDimming() {
-        if (searchQuery.isEmpty()) {
+        if (searchQuery.isEmpty())
             return;
-        }
 
         int left = (width - xSize) / 2;
         int top = (height - ySize) / 2;
@@ -147,9 +150,8 @@ public class GuiMassAssembler extends GuiContainer {
         for (Object slotObject : inventorySlots.inventorySlots) {
             net.minecraft.inventory.Slot slot = (net.minecraft.inventory.Slot)slotObject;
 
-            if (!container.isPatternSlot(slot.slotNumber) || !slot.func_111238_b() || matchesSearch(slot.getStack())) {
+            if (!container.isPatternSlot(slot.slotNumber) || !slot.func_111238_b() || matchesSearch(slot.getStack()))
                 continue;
-            }
 
             drawRect(
                     left + slot.xDisplayPosition,
@@ -166,13 +168,11 @@ public class GuiMassAssembler extends GuiContainer {
 
     @SuppressWarnings("unchecked")
     private boolean matchesSearch(net.minecraft.item.ItemStack stack) {
-        if (stack == null) {
+        if (stack == null)
             return false;
-        }
 
-        if (stack.getDisplayName().toLowerCase().contains(searchQuery)) {
+        if (stack.getDisplayName().toLowerCase().contains(searchQuery))
             return true;
-        }
 
         // Encoded patterns list their inputs and outputs in the tooltip.
         try {
@@ -228,9 +228,8 @@ public class GuiMassAssembler extends GuiContainer {
     /** Ingredients of the job currently being worked on, plus its result. */
     private void drawJobPreview() {
         net.minecraft.item.ItemStack result = controller.getActiveJobResult();
-        if (result == null) {
+        if (result == null)
             return;
-        }
 
         net.minecraft.client.renderer.RenderHelper.enableGUIStandardItemLighting();
         zLevel = 100F;
@@ -257,9 +256,8 @@ public class GuiMassAssembler extends GuiContainer {
     }
 
     private void drawStack(net.minecraft.item.ItemStack stack, int x, int y) {
-        if (stack == null) {
+        if (stack == null)
             return;
-        }
 
         itemRender.renderItemAndEffectIntoGUI(fontRendererObj, mc.getTextureManager(), stack, x, y);
         itemRender.renderItemOverlayIntoGUI(fontRendererObj, mc.getTextureManager(), stack, x, y);
@@ -310,15 +308,13 @@ public class GuiMassAssembler extends GuiContainer {
         int left = (width - xSize) / 2 + NAV_X;
         int top = (height - ySize) / 2 + NAV_Y;
 
-        if (mouseY < top || mouseY >= top + NAV_BUTTON_HEIGHT) {
+        if (mouseY < top || mouseY >= top + NAV_BUTTON_HEIGHT)
             return -1;
-        }
 
         for (int button = 0; button < NAV_X_OFFSET.length; button++) {
             int x = left + NAV_X_OFFSET[button];
-            if (mouseX >= x && mouseX < x + NAV_WIDTH[button]) {
+            if (mouseX >= x && mouseX < x + NAV_WIDTH[button])
                 return button;
-            }
         }
 
         return -1;
@@ -359,9 +355,8 @@ public class GuiMassAssembler extends GuiContainer {
                 return;
             }
 
-            if (navButton >= 0) {
+            if (navButton >= 0)
                 return;
-            }
         }
 
         super.mouseClicked(mouseX, mouseY, button);
@@ -370,9 +365,8 @@ public class GuiMassAssembler extends GuiContainer {
     /** Bars fill upward, so both the screen and source Y shift down as they empty. */
     private void drawVerticalBar(int x, int y, int u, float fraction) {
         int filled = Math.round(fraction * BAR_HEIGHT);
-        if (filled <= 0) {
+        if (filled <= 0)
             return;
-        }
 
         int empty = BAR_HEIGHT - filled;
         drawTexturedModalRect(x, y + empty, u, empty, BAR_WIDTH, filled);
@@ -380,9 +374,8 @@ public class GuiMassAssembler extends GuiContainer {
 
     private void drawProgress(int left, int top) {
         int workPerJob = controller.getWorkPerJob();
-        if (workPerJob <= 0) {
+        if (workPerJob <= 0)
             return;
-        }
 
         float fraction = Math.min(container.getWork() / (float)workPerJob, 1F);
         int filled = Math.round(fraction * PROGRESS_WIDTH);
@@ -401,14 +394,12 @@ public class GuiMassAssembler extends GuiContainer {
     /** Coprocessor scaling is logarithmic, matching the diminishing returns in throughput. */
     private float getCpuFraction() {
         int cpus = container.getCraftingCoprocessorCount();
-        if (cpus <= 0) {
+        if (cpus <= 0)
             return 0F;
-        }
 
         int maxEffective = getMaxEffectiveCpus();
-        if (cpus >= maxEffective) {
+        if (cpus >= maxEffective)
             return 1F;
-        }
 
         return (float)(Math.log1p(cpus) / Math.log1p(maxEffective));
     }
@@ -467,15 +458,13 @@ public class GuiMassAssembler extends GuiContainer {
         super.handleMouseInput();
 
         int scroll = Mouse.getEventDWheel();
-        if (scroll == 0 || container.getPageCount() <= 1) {
+        if (scroll == 0 || container.getPageCount() <= 1)
             return;
-        }
 
-        if (scroll < 0) {
+        if (scroll < 0)
             container.setCurrentPage(container.getCurrentPage() + 1);
-        } else {
+        else
             container.setCurrentPage(container.getCurrentPage() - 1);
-        }
     }
 
     private static String format(String key, int value) {

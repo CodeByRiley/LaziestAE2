@@ -12,6 +12,7 @@ import appeng.api.networking.crafting.ICraftingLink;
 import appeng.api.networking.crafting.ICraftingRequester;
 import appeng.api.networking.energy.IEnergyGrid;
 import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.ISecurityGrid;
 import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStackWatcher;
 import appeng.api.networking.storage.IStackWatcherHost;
@@ -80,16 +81,14 @@ public class TileLevelMaintainer extends TileNetworkDevice
     }
 
     private void resetWatcher() {
-        if (watcher == null) {
+        if (watcher == null)
             return;
-        }
 
         watcher.clear();
 
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (requestStacks[i] != null) {
+            if (requestStacks[i] != null)
                 watcher.add(AEApi.instance().storage().createItemStack(requestStacks[i]));
-            }
         }
     }
 
@@ -97,16 +96,14 @@ public class TileLevelMaintainer extends TileNetworkDevice
     @Override
     public void onStackChange(IItemList items, IAEStack fullStack, IAEStack diffStack,
             BaseActionSource source, StorageChannel channel) {
-        if (channel != StorageChannel.ITEMS || !(fullStack instanceof IAEItemStack)) {
+        if (channel != StorageChannel.ITEMS || !(fullStack instanceof IAEItemStack))
             return;
-        }
 
         IAEItemStack changed = (IAEItemStack)fullStack;
 
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (requestStacks[i] != null && changed.isSameType(requestStacks[i])) {
+            if (requestStacks[i] != null && changed.isSameType(requestStacks[i]))
                 knownCounts[i] = changed.getStackSize();
-            }
         }
     }
 
@@ -128,7 +125,11 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     @Override
     protected void updateServer() {
-        if (sleepTicks-- > 0) {
+        if (sleepTicks-- > 0)
+            return;
+
+        if (!isRedstoneActive()) {
+            sleepTicks = sleepIncrement;
             return;
         }
 
@@ -153,9 +154,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
         if (workDone) {
             markDirty();
-            if (sleepIncrement > sleepMin) {
+            if (sleepIncrement > sleepMin)
                 sleepIncrement = Math.max(sleepIncrement - 20, sleepMin);
-            }
         } else if (sleepIncrement < sleepMax) {
             sleepIncrement = Math.min(sleepIncrement + 30, sleepMax);
         }
@@ -166,17 +166,15 @@ public class TileLevelMaintainer extends TileNetworkDevice
     private boolean pushResults(IGrid grid) {
         IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
         IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-        if (energyGrid == null || storageGrid == null) {
+        if (energyGrid == null || storageGrid == null)
             return false;
-        }
 
         IMEMonitor<IAEItemStack> inventory = storageGrid.getItemInventory();
         boolean workDone = false;
 
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (results[i] == null) {
+            if (results[i] == null)
                 continue;
-            }
 
             IAEItemStack aeStack = AEApi.instance().storage().createItemStack(results[i]);
             IAEItemStack remainder = AEApi.instance().storage().poweredInsert(energyGrid, inventory, aeStack, actionSource);
@@ -195,16 +193,14 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     private boolean pollPendingJobs(IGrid grid) {
         ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-        if (crafting == null) {
+        if (crafting == null)
             return false;
-        }
 
         boolean workDone = false;
 
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (pendingJobs[i] == null || !pendingJobs[i].isDone()) {
+            if (pendingJobs[i] == null || !pendingJobs[i].isDone())
                 continue;
-            }
 
             ICraftingJob job = null;
             try {
@@ -230,17 +226,17 @@ public class TileLevelMaintainer extends TileNetworkDevice
     private boolean requestCrafting(IGrid grid) {
         ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
         IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-        if (crafting == null || storageGrid == null) {
+        ISecurityGrid securityGrid = grid.getCache(ISecurityGrid.class);
+        if (crafting == null || storageGrid == null || securityGrid == null)
             return false;
-        }
+
 
         IMEMonitor<IAEItemStack> inventory = storageGrid.getItemInventory();
         boolean workDone = false;
 
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (requestStacks[i] == null || links[i] != null || pendingJobs[i] != null || results[i] != null) {
+            if (requestStacks[i] == null || links[i] != null || pendingJobs[i] != null || results[i] != null)
                 continue;
-            }
 
             IAEItemStack requested = AEApi.instance().storage().createItemStack(requestStacks[i]);
 
@@ -270,43 +266,37 @@ public class TileLevelMaintainer extends TileNetworkDevice
     public ImmutableSet<ICraftingLink> getRequestedJobs() {
         ImmutableSet.Builder<ICraftingLink> builder = ImmutableSet.builder();
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (links[i] != null) {
+            if (links[i] != null)
                 builder.add(links[i]);
-            }
         }
         return builder.build();
     }
 
     @Override
     public IAEItemStack injectCraftedItems(ICraftingLink link, IAEItemStack stack, Actionable mode) {
-        if (stack == null) {
+        if (stack == null)
             return null;
-        }
 
         int slot = getSlotForLink(link);
-        if (slot == -1) {
+        if (slot == -1)
             return stack;
-        }
 
         ItemStack incoming = stack.getItemStack();
-        if (incoming == null) {
+        if (incoming == null)
             return stack;
-        }
 
         int space;
         ItemStack existing = results[slot];
-        if (existing == null) {
+        if (existing == null)
             space = Math.min(incoming.getMaxStackSize(), 64);
-        } else if (existing.isItemEqual(incoming) && ItemStack.areItemStackTagsEqual(existing, incoming)) {
+        else if (existing.isItemEqual(incoming) && ItemStack.areItemStackTagsEqual(existing, incoming))
             space = Math.min(existing.getMaxStackSize(), 64) - existing.stackSize;
-        } else {
+        else
             space = 0;
-        }
 
         long accepted = Math.min((long)space, stack.getStackSize());
-        if (accepted <= 0L) {
+        if (accepted <= 0L)
             return stack;
-        }
 
         if (mode == Actionable.MODULATE) {
             if (existing == null) {
@@ -324,9 +314,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
             sleepTicks = 0;
         }
 
-        if (accepted >= stack.getStackSize()) {
+        if (accepted >= stack.getStackSize())
             return null;
-        }
 
         IAEItemStack remainder = stack.copy();
         remainder.setStackSize(stack.getStackSize() - accepted);
@@ -344,9 +333,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     private int getSlotForLink(ICraftingLink link) {
         for (int i = 0; i < REQ_COUNT; i++) {
-            if (links[i] != null && links[i].getCraftingID().equals(link.getCraftingID())) {
+            if (links[i] != null && links[i].getCraftingID().equals(link.getCraftingID()))
                 return i;
-            }
         }
         return -1;
     }
@@ -384,9 +372,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
     }
 
     public void setRequest(int slot, ItemStack held) {
-        if (!isRequestSlot(slot)) {
+        if (!isRequestSlot(slot))
             return;
-        }
 
         if (held == null) {
             requestStacks[slot] = null;
@@ -407,9 +394,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
     }
 
     public void setRequestQuantity(int slot, long quantity) {
-        if (!isRequestSlot(slot)) {
+        if (!isRequestSlot(slot))
             return;
-        }
 
         if (quantity <= 0L) {
             setRequest(slot, null);
@@ -457,9 +443,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
         NBTTagList resultList = new NBTTagList();
         for (int i = 0; i < REQ_COUNT; i++) {
             NBTTagCompound entry = new NBTTagCompound();
-            if (results[i] != null) {
+            if (results[i] != null)
                 results[i].writeToNBT(entry);
-            }
             resultList.appendTag(entry);
         }
         tag.setTag("Results", resultList);
@@ -467,9 +452,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
         NBTTagList linkList = new NBTTagList();
         for (int i = 0; i < REQ_COUNT; i++) {
             NBTTagCompound entry = new NBTTagCompound();
-            if (links[i] != null) {
+            if (links[i] != null)
                 links[i].writeToNBT(entry);
-            }
             linkList.appendTag(entry);
         }
         tag.setTag("CraftingLinks", linkList);
@@ -555,9 +539,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
-        if (!isRequestSlot(slot) || results[slot] == null || amount <= 0) {
+        if (!isRequestSlot(slot) || results[slot] == null || amount <= 0)
             return null;
-        }
 
         ItemStack stack = results[slot];
         if (stack.stackSize <= amount) {
@@ -573,9 +556,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
-        if (!isRequestSlot(slot)) {
+        if (!isRequestSlot(slot))
             return null;
-        }
 
         ItemStack stack = results[slot];
         results[slot] = null;
@@ -617,12 +599,10 @@ public class TileLevelMaintainer extends TileNetworkDevice
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() { }
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() { }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -658,9 +638,8 @@ public class TileLevelMaintainer extends TileNetworkDevice
         @Override
         public void setInventorySlotContents(int slot, ItemStack stack) {
             // Client-side vanilla sync lands here; server-side config goes through setRequest.
-            if (worldObj != null && worldObj.isRemote && isRequestSlot(slot)) {
+            if (worldObj != null && worldObj.isRemote && isRequestSlot(slot))
                 requestStacks[slot] = stack;
-            }
         }
 
         @Override
@@ -684,12 +663,10 @@ public class TileLevelMaintainer extends TileNetworkDevice
         }
 
         @Override
-        public void openInventory() {
-        }
+        public void openInventory() { }
 
         @Override
-        public void closeInventory() {
-        }
+        public void closeInventory() { }
 
         @Override
         public boolean isItemValidForSlot(int slot, ItemStack stack) {

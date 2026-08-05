@@ -20,7 +20,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class TilePowered extends TileEntity implements IActionHost {
+public abstract class TilePowered extends TileEntity implements IActionHost, IRedstoneConfigurable {
 
     private static final String NODE_NBT_KEY = "AENode";
 
@@ -29,6 +29,8 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
     private final PoweredGridBlock gridBlock = createGridBlock();
     private IGridNode gridNode;
     private NBTTagCompound pendingNodeNBT;
+
+    private RedstoneMode redstoneMode = RedstoneMode.IGNORE;
 
     protected TilePowered(double energyCapacity) {
         this.energy = new EnergyBuffer(energyCapacity, this::markDirty);
@@ -43,9 +45,8 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
     public void updateEntity() {
         super.updateEntity();
 
-        if (worldObj == null || isInvalid()) {
+        if (worldObj == null || isInvalid())
             return;
-        }
 
         if (worldObj.isRemote) {
             updateClient();
@@ -56,18 +57,15 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
         }
     }
 
-    protected void updateServer() {
-    }
+    protected void updateServer() { }
 
-    protected void updateClient() {
-    }
+    protected void updateClient() { }
 
     // Grid nodes must only exist server-side, and only once the tile has a world
     // and position, so creation is deferred to the first server tick.
     private void ensureGridNode() {
-        if (gridNode != null) {
+        if (gridNode != null)
             return;
-        }
 
         gridNode = AEApi.instance().createGridNode(gridBlock);
 
@@ -98,24 +96,20 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
 
     protected void chargeFromNetwork() {
         double needed = Math.min(energy.getRemainingCapacity(), getNetworkTransferRate());
-        if (needed <= 0D || gridNode == null || !gridNode.isActive()) {
+        if (needed <= 0D || gridNode == null || !gridNode.isActive())
             return;
-        }
 
         IGrid grid = gridNode.getGrid();
-        if (grid == null) {
+        if (grid == null)
             return;
-        }
 
         IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
-        if (energyGrid == null) {
+        if (energyGrid == null)
             return;
-        }
 
         double extracted = energyGrid.extractAEPower(needed, Actionable.MODULATE, PowerMultiplier.CONFIG);
-        if (extracted > 0D) {
+        if (extracted > 0D)
             energy.receive(extracted, false);
-        }
     }
 
     protected double getIdlePowerUsage() {
@@ -130,6 +124,41 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
         return gridNode != null && gridNode.isActive();
     }
 
+    // === Redstone control ===
+
+    /** Tiles that do no work of their own, such as multiblock casing, override this. */
+    @Override
+    public boolean supportsRedstoneControl() {
+        return true;
+    }
+
+    @Override
+    public RedstoneMode getRedstoneMode() {
+        return redstoneMode;
+    }
+
+    @Override
+    public void setRedstoneMode(RedstoneMode mode) {
+        if (mode == null || redstoneMode == mode)
+            return;
+
+        redstoneMode = mode;
+        markDirty();
+        markForUpdate();
+    }
+
+    /**
+     * The signal is only sampled when a mode actually cares about it, so the
+     * default configuration costs nothing per tick.
+     */
+    @Override
+    public boolean isRedstoneActive() {
+        if (!redstoneMode.usesSignal() || worldObj == null)
+            return redstoneMode.allowsWork(false);
+
+        return redstoneMode.allowsWork(worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord));
+    }
+
     /**
      * Whether a player may act on this device, according to the ME Security
      * Terminal on the network it is attached to.
@@ -140,15 +169,13 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
      * sides, so the client always answers true and lets the server decide.
      */
     public boolean hasPermission(EntityPlayer player, SecurityPermissions permission) {
-        if (worldObj == null || worldObj.isRemote || player == null) {
+        if (worldObj == null || worldObj.isRemote || player == null)
             return true;
-        }
 
         IGridNode node = getActionableNode();
         IGrid grid = node == null ? null : node.getGrid();
-        if (grid == null) {
+        if (grid == null)
             return true;
-        }
 
         ISecurityGrid security = grid.getCache(ISecurityGrid.class);
         return security == null || security.hasPermission(player, permission);
@@ -178,9 +205,8 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
 
     @Override
     public void securityBreak() {
-        if (worldObj != null && !worldObj.isRemote) {
+        if (worldObj != null && !worldObj.isRemote)
             worldObj.func_147480_a(xCoord, yCoord, zCoord, true);
-        }
     }
 
     @Override
@@ -189,15 +215,15 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
     }
 
     protected void markForUpdate() {
-        if (worldObj != null) {
+        if (worldObj != null)
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-        }
     }
 
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
         energy.writeToNBT(tag, "Energy");
+        writeRedstoneNBT(tag);
 
         if (gridNode != null) {
             gridNode.saveToNBT(NODE_NBT_KEY, tag);
@@ -205,9 +231,8 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
             // Preserve node data that was loaded but never applied (tile never ticked).
             for (Object keyObj : pendingNodeNBT.func_150296_c()) {
                 String key = (String)keyObj;
-                if (key.startsWith(NODE_NBT_KEY)) {
+                if (key.startsWith(NODE_NBT_KEY))
                     tag.setTag(key, pendingNodeNBT.getTag(key).copy());
-                }
             }
         }
     }
@@ -216,6 +241,7 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         energy.readFromNBT(tag, "Energy");
+        readRedstoneNBT(tag);
         pendingNodeNBT = (NBTTagCompound)tag.copy();
     }
 
@@ -233,10 +259,23 @@ public abstract class TilePowered extends TileEntity implements IActionHost {
 
     protected void writeSyncNBT(NBTTagCompound tag) {
         energy.writeToNBT(tag, "Energy");
+        writeRedstoneNBT(tag);
     }
 
     protected void readSyncNBT(NBTTagCompound tag) {
         energy.readFromNBT(tag, "Energy");
+        readRedstoneNBT(tag);
+    }
+
+    private void writeRedstoneNBT(NBTTagCompound tag) {
+        // Absent means IGNORE, so the default costs nothing on disk or in the
+        // description packet — which matters for a 256-block assembler structure.
+        if (redstoneMode != RedstoneMode.IGNORE)
+            tag.setByte("RedstoneMode", (byte)redstoneMode.ordinal());
+    }
+
+    private void readRedstoneNBT(NBTTagCompound tag) {
+        redstoneMode = RedstoneMode.byIndex(tag.getByte("RedstoneMode"));
     }
 
     public EnergyBuffer getEnergyBuffer() {

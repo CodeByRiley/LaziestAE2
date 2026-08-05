@@ -10,6 +10,5 @@ public final class Constants {
     public static final String CLIENT_PROXY = PACKAGE_ROOT + ".proxy.ClientProxy";
     public static final String SERVER_PROXY = PACKAGE_ROOT + ".proxy.CommonProxy";
 
-    private Constants() {
-    }
+    private Constants() { }
 }

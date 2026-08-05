@@ -95,14 +95,12 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         }
 
         IGridNode node = getActionableNode();
-        if (node == null || !node.isActive()) {
+        if (node == null || !node.isActive())
             return;
-        }
 
         IGrid grid = node.getGrid();
-        if (grid == null) {
+        if (grid == null)
             return;
-        }
 
         if (patternsDirty) {
             patternsDirty = false;
@@ -119,9 +117,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
      * queue can change every tick on a well-upgraded structure.
      */
     private void syncActiveJob() {
-        if (--jobSyncTimer > 0) {
+        if (--jobSyncTimer > 0)
             return;
-        }
 
         jobSyncTimer = JOB_SYNC_INTERVAL;
 
@@ -149,23 +146,20 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
     }
 
     private void drainOutputBuffer(IGrid grid) {
-        if (outputBuffer.isEmpty()) {
+        if (outputBuffer.isEmpty())
             return;
-        }
 
         IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
         IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-        if (energyGrid == null || storageGrid == null) {
+        if (energyGrid == null || storageGrid == null)
             return;
-        }
 
         IMEMonitor<IAEItemStack> inventory = storageGrid.getItemInventory();
 
         for (int i = outputBuffer.size(); i > 0; i--) {
             ItemStack stack = outputBuffer.poll();
-            if (stack == null) {
+            if (stack == null)
                 continue;
-            }
 
             IAEItemStack aeStack = AEApi.instance().storage().createItemStack(stack);
             IAEItemStack remainder = AEApi.instance().storage()
@@ -182,9 +176,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
     }
 
     private void processJobs(IGrid grid) {
-        if (!formed) {
+        if (!formed)
             return;
-        }
 
         int jobs = jobQueue.size();
         if (jobs == 0) {
@@ -196,9 +189,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         }
 
         IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
-        if (energyGrid == null) {
+        if (energyGrid == null)
             return;
-        }
 
         int previousWork = work;
         int workPerJob = getWorkPerJob();
@@ -209,9 +201,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             if (energyUnitCost > 0D) {
                 double extracted = energyGrid.extractAEPower(
                         energyUnitCost * workToDo, Actionable.MODULATE, PowerMultiplier.CONFIG);
-                if (extracted > 0D) {
+                if (extracted > 0D)
                     work += (int)Math.ceil(extracted / energyUnitCost);
-                }
             } else {
                 work += workToDo;
             }
@@ -223,43 +214,37 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
 
             outputBuffer.offer(job.result);
             for (ItemStack remainder : job.remainders) {
-                if (remainder != null && remainder.stackSize > 0) {
+                if (remainder != null && remainder.stackSize > 0)
                     outputBuffer.offer(remainder);
-                }
             }
         }
 
-        if (previousWork != work) {
+        if (previousWork != work)
             markDirty();
-        }
     }
 
     // === ICraftingProvider ===
 
     @Override
     public void provideCrafting(ICraftingProviderHelper helper) {
-        if (!formed || worldObj == null) {
+        if (!formed || worldObj == null)
             return;
-        }
 
         for (int[] pos : patternProviderPositions) {
             TileEntity tile = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
-            if (tile instanceof TileMassAssemblerPatternProvider) {
+            if (tile instanceof TileMassAssemblerPatternProvider)
                 ((TileMassAssemblerPatternProvider)tile).providePatterns(this, helper);
-            }
         }
     }
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails pattern, InventoryCrafting table) {
-        if (!formed || !pattern.isCraftable() || isBusy()) {
+        if (!formed || !pattern.isCraftable() || isBusy())
             return false;
-        }
 
         ItemStack output = pattern.getOutput(table, worldObj);
-        if (output == null || output.stackSize <= 0) {
+        if (output == null || output.stackSize <= 0)
             return false;
-        }
 
         ItemStack[] inputs = new ItemStack[JOB_INPUT_SLOTS];
         ItemStack[] remainders = new ItemStack[JOB_INPUT_SLOTS];
@@ -267,14 +252,12 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
 
         for (int i = 0; i < max; i++) {
             ItemStack stack = table.getStackInSlot(i);
-            if (stack == null) {
+            if (stack == null)
                 continue;
-            }
 
             inputs[i] = stack.copy();
-            if (stack.getItem() != null && stack.getItem().hasContainerItem(stack)) {
+            if (stack.getItem() != null && stack.getItem().hasContainerItem(stack))
                 remainders[i] = stack.getItem().getContainerItem(stack.copy());
-            }
         }
 
         jobQueue.offer(new AssemblyJob(inputs, remainders, output.copy()));
@@ -285,6 +268,15 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
     @Override
     public boolean isBusy() {
         return jobQueue.size() >= Math.max(1, LaziestConfig.jobQueueSize);
+    }
+
+    /**
+     * The chamber has no side-IO flyout to host the control, so it is left out
+     * rather than carrying a mode nothing can change.
+     */
+    @Override
+    public boolean supportsRedstoneControl() {
+        return false;
     }
 
     public void notifyPatternUpdate() {
@@ -305,15 +297,13 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
     public List<TileMassAssemblerPatternProvider> getPatternProviders() {
         List<TileMassAssemblerPatternProvider> providers = new ArrayList<TileMassAssemblerPatternProvider>();
 
-        if (worldObj == null) {
+        if (worldObj == null)
             return providers;
-        }
 
         for (int[] pos : patternProviderPositions) {
             TileEntity tile = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
-            if (tile instanceof TileMassAssemblerPatternProvider) {
+            if (tile instanceof TileMassAssemblerPatternProvider)
                 providers.add((TileMassAssemblerPatternProvider)tile);
-            }
         }
 
         return providers;
@@ -380,9 +370,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
 
         for (AssemblyJob job : jobQueue) {
             for (ItemStack input : job.inputs) {
-                if (input != null && input.stackSize > 0) {
+                if (input != null && input.stackSize > 0)
                     drops.add(input);
-                }
             }
         }
 
@@ -431,18 +420,16 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         NBTTagList jobList = tag.getTagList("Jobs", 10);
         for (int i = 0; i < jobList.tagCount(); i++) {
             AssemblyJob job = AssemblyJob.fromNBT(jobList.getCompoundTagAt(i));
-            if (job != null) {
+            if (job != null)
                 jobQueue.offer(job);
-            }
         }
 
         outputBuffer.clear();
         NBTTagList outputList = tag.getTagList("OutputBuffer", 10);
         for (int i = 0; i < outputList.tagCount(); i++) {
             ItemStack stack = ItemStack.loadItemStackFromNBT(outputList.getCompoundTagAt(i));
-            if (stack != null) {
+            if (stack != null)
                 outputBuffer.offer(stack);
-            }
         }
     }
 
@@ -475,9 +462,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         for (int i = 0; i < JOB_INPUT_SLOTS; i++) {
             NBTTagCompound entry = new NBTTagCompound();
             entry.setByte("Slot", (byte)i);
-            if (activeJobInputs[i] != null) {
+            if (activeJobInputs[i] != null)
                 activeJobInputs[i].writeToNBT(entry);
-            }
             inputList.appendTag(entry);
         }
         tag.setTag("JobInputs", inputList);
@@ -496,9 +482,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         for (int i = 0; i < inputList.tagCount(); i++) {
             NBTTagCompound entry = inputList.getCompoundTagAt(i);
             int slot = entry.getByte("Slot") & 255;
-            if (slot < JOB_INPUT_SLOTS && entry.hasKey("id")) {
+            if (slot < JOB_INPUT_SLOTS && entry.hasKey("id"))
                 activeJobInputs[slot] = ItemStack.loadItemStackFromNBT(entry);
-            }
         }
     }
 
@@ -540,9 +525,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             craftingCoprocessorCount = newCraftingCoprocessorCount;
             ioPortCount = newIoPortCount;
 
-            if (formationChanged) {
+            if (formationChanged)
                 notifyPatternUpdate();
-            }
 
             markDirty();
             markForUpdate();
@@ -551,9 +535,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
 
     /** Propagates the formed state to every part so they render their lit texture. */
     private void updatePartActivity(List<int[]> positions, boolean formedNow) {
-        if (worldObj == null) {
+        if (worldObj == null)
             return;
-        }
 
         for (int[] pos : positions) {
             TileEntity tile = worldObj.getTileEntity(pos[0], pos[1], pos[2]);
@@ -625,9 +608,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             for (int i = 0; i < inputs.length; i++) {
                 NBTTagCompound entry = new NBTTagCompound();
                 entry.setByte("Slot", (byte)i);
-                if (inputs[i] != null) {
+                if (inputs[i] != null)
                     inputs[i].writeToNBT(entry);
-                }
                 inputList.appendTag(entry);
             }
             tag.setTag("Inputs", inputList);
@@ -636,9 +618,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             for (int i = 0; i < remainders.length; i++) {
                 NBTTagCompound entry = new NBTTagCompound();
                 entry.setByte("Slot", (byte)i);
-                if (remainders[i] != null) {
+                if (remainders[i] != null)
                     remainders[i].writeToNBT(entry);
-                }
                 remainderList.appendTag(entry);
             }
             tag.setTag("Remainders", remainderList);
@@ -651,9 +632,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
 
         private static AssemblyJob fromNBT(NBTTagCompound tag) {
             ItemStack result = ItemStack.loadItemStackFromNBT(tag.getCompoundTag("Result"));
-            if (result == null) {
+            if (result == null)
                 return null;
-            }
 
             ItemStack[] inputs = readStackArray(tag.getTagList("Inputs", 10));
             ItemStack[] remainders = readStackArray(tag.getTagList("Remainders", 10));
@@ -665,9 +645,8 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             for (int i = 0; i < list.tagCount(); i++) {
                 NBTTagCompound entry = list.getCompoundTagAt(i);
                 int slot = entry.getByte("Slot") & 255;
-                if (slot < JOB_INPUT_SLOTS && entry.hasKey("id")) {
+                if (slot < JOB_INPUT_SLOTS && entry.hasKey("id"))
                     stacks[slot] = ItemStack.loadItemStackFromNBT(entry);
-                }
             }
             return stacks;
         }

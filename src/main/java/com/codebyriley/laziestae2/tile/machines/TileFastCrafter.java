@@ -76,6 +76,9 @@ public class TileFastCrafter extends TileNetworkDevice
 
     @Override
     protected void updateServer() {
+        if (!isRedstoneActive())
+            return;
+
         importIntoNetwork();
         flushExportBuffer();
     }
@@ -87,27 +90,23 @@ public class TileFastCrafter extends TileNetworkDevice
     /** Pushes a buffer's contents into network storage. */
     private void insertRangeIntoNetwork(int start) {
         IGridNode node = getActionableNode();
-        if (node == null || !node.isActive()) {
+        if (node == null || !node.isActive())
             return;
-        }
 
         IGrid grid = node.getGrid();
-        if (grid == null) {
+        if (grid == null)
             return;
-        }
 
         IEnergyGrid energyGrid = grid.getCache(IEnergyGrid.class);
         IStorageGrid storageGrid = grid.getCache(IStorageGrid.class);
-        if (energyGrid == null || storageGrid == null) {
+        if (energyGrid == null || storageGrid == null)
             return;
-        }
 
         IMEMonitor<IAEItemStack> networkInventory = storageGrid.getItemInventory();
 
         for (int i = start; i < start + BUFFER_SIZE; i++) {
-            if (inventory[i] == null) {
+            if (inventory[i] == null)
                 continue;
-            }
 
             IAEItemStack aeStack = AEApi.instance().storage().createItemStack(inventory[i]);
             IAEItemStack remainder = AEApi.instance().storage()
@@ -127,15 +126,13 @@ public class TileFastCrafter extends TileNetworkDevice
         boolean movedAny = false;
 
         for (int i = EXPORT_START; i < EXPORT_START + BUFFER_SIZE; i++) {
-            if (inventory[i] == null) {
+            if (inventory[i] == null)
                 continue;
-            }
 
             // Only push through faces the player configured for output.
             for (int side = 0; side < SideConfiguration.FACE_COUNT && inventory[i] != null; side++) {
-                if (!getSideMode(side).allowsOutput()) {
+                if (!getSideMode(side).allowsOutput())
                     continue;
-                }
 
                 ItemStack remainder = AdjacentInventoryHelper.insertIntoSide(
                         worldObj, xCoord, yCoord, zCoord, side, inventory[i]);
@@ -173,13 +170,11 @@ public class TileFastCrafter extends TileNetworkDevice
         }
 
         // No point waiting if there is no inventory on an output face at all.
-        if (!hasOutputTarget()) {
+        if (!hasOutputTarget())
             exportStallTicks = EXPORT_STALL_TICKS;
-        }
 
-        if (++exportStallTicks < EXPORT_STALL_TICKS) {
+        if (++exportStallTicks < EXPORT_STALL_TICKS)
             return;
-        }
 
         exportStallTicks = 0;
         insertRangeIntoNetwork(EXPORT_START);
@@ -194,17 +189,15 @@ public class TileFastCrafter extends TileNetworkDevice
     /** True if any face configured for output has an inventory next to it. */
     private boolean hasOutputTarget() {
         for (int side = 0; side < SideConfiguration.FACE_COUNT; side++) {
-            if (!getSideMode(side).allowsOutput()) {
+            if (!getSideMode(side).allowsOutput())
                 continue;
-            }
 
             ForgeDirection dir = ForgeDirection.getOrientation(side);
             net.minecraft.tileentity.TileEntity neighbour = worldObj.getTileEntity(
                     xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 
-            if (neighbour instanceof net.minecraft.inventory.IInventory) {
+            if (neighbour instanceof net.minecraft.inventory.IInventory)
                 return true;
-            }
         }
 
         return false;
@@ -215,29 +208,25 @@ public class TileFastCrafter extends TileNetworkDevice
     @Override
     public void provideCrafting(ICraftingProviderHelper helper) {
         World world = getWorldObj();
-        if (world == null) {
+        if (world == null)
             return;
-        }
 
         for (int i = PATTERN_START; i < PATTERN_START + PATTERN_COUNT; i++) {
             ItemStack stack = inventory[i];
-            if (stack == null || !(stack.getItem() instanceof ICraftingPatternItem)) {
+            if (stack == null || !(stack.getItem() instanceof ICraftingPatternItem))
                 continue;
-            }
 
             ICraftingPatternDetails pattern =
                     ((ICraftingPatternItem)stack.getItem()).getPatternForItem(stack, world);
-            if (pattern != null) {
+            if (pattern != null)
                 helper.addCraftingOption(this, pattern);
-            }
         }
     }
 
     @Override
     public boolean pushPattern(ICraftingPatternDetails pattern, InventoryCrafting table) {
-        if (isBusy()) {
+        if (isBusy())
             return false;
-        }
 
         // Stage the pattern inputs into the export buffer; the tick handler pushes
         // them into adjacent inventories.
@@ -245,13 +234,11 @@ public class TileFastCrafter extends TileNetworkDevice
 
         for (int i = 0; i < table.getSizeInventory(); i++) {
             ItemStack stack = table.getStackInSlot(i);
-            if (stack == null || stack.stackSize <= 0) {
+            if (stack == null || stack.stackSize <= 0)
                 continue;
-            }
 
-            if (bufferSlot >= EXPORT_START + BUFFER_SIZE) {
+            if (bufferSlot >= EXPORT_START + BUFFER_SIZE)
                 return false;
-            }
 
             inventory[bufferSlot++] = stack.copy();
         }
@@ -268,30 +255,25 @@ public class TileFastCrafter extends TileNetworkDevice
      * tick. This is what makes the unit "preemptive".
      */
     private void preemptivelyBatch(ICraftingPatternDetails pattern) {
-        if (!LaziestConfig.fastCrafterPreemptiveBatching || !CraftingCpuInternals.isAvailable()) {
+        if (!LaziestConfig.fastCrafterPreemptiveBatching || !CraftingCpuInternals.isAvailable())
             return;
-        }
 
         IGridNode node = getActionableNode();
-        if (node == null || !node.isActive()) {
+        if (node == null || !node.isActive())
             return;
-        }
 
         IGrid grid = node.getGrid();
-        if (grid == null) {
+        if (grid == null)
             return;
-        }
 
         ICraftingGrid crafting = grid.getCache(ICraftingGrid.class);
-        if (crafting == null) {
+        if (crafting == null)
             return;
-        }
 
         for (ICraftingCPU cpu : crafting.getCpus()) {
             for (CraftingCpuInternals.CraftingTask task : CraftingCpuInternals.getTasks(cpu)) {
-                if (!pattern.equals(task.getPattern())) {
+                if (!pattern.equals(task.getPattern()))
                     continue;
-                }
 
                 // The invocation being pushed right now is already accounted for.
                 long remaining = task.getInvocations() - 1L;
@@ -316,14 +298,12 @@ public class TileFastCrafter extends TileNetworkDevice
     /** Adds one iteration's ingredients to the export buffer, or fails if it will not fit. */
     private boolean stageInputs(ICraftingPatternDetails pattern) {
         for (IAEItemStack input : pattern.getCondensedInputs()) {
-            if (input == null) {
+            if (input == null)
                 continue;
-            }
 
             ItemStack stack = input.getItemStack();
-            if (stack != null && !insertIntoExportBuffer(stack)) {
+            if (stack != null && !insertIntoExportBuffer(stack))
                 return false;
-            }
         }
 
         return true;
@@ -348,9 +328,8 @@ public class TileFastCrafter extends TileNetworkDevice
                     existing.stackSize += moved;
                     remaining.stackSize -= moved;
 
-                    if (remaining.stackSize <= 0) {
+                    if (remaining.stackSize <= 0)
                         return true;
-                    }
                 }
             }
         }
@@ -377,24 +356,25 @@ public class TileFastCrafter extends TileNetworkDevice
 
     @Override
     public boolean isBusy() {
+        // Reporting busy while disabled keeps the network from routing jobs here.
+        if (!isRedstoneActive())
+            return true;
+
         for (int i = EXPORT_START; i < EXPORT_START + BUFFER_SIZE; i++) {
-            if (inventory[i] != null) {
+            if (inventory[i] != null)
                 return true;
-            }
         }
         return false;
     }
 
     private void notifyPatternChange() {
         IGridNode node = getActionableNode();
-        if (node == null || worldObj == null || worldObj.isRemote) {
+        if (node == null || worldObj == null || worldObj.isRemote)
             return;
-        }
 
         IGrid grid = node.getGrid();
-        if (grid != null) {
+        if (grid != null)
             grid.postEvent(new MENetworkCraftingPatternChange(this, node));
-        }
     }
 
     public static boolean isPatternStack(ItemStack stack) {
@@ -443,9 +423,8 @@ public class TileFastCrafter extends TileNetworkDevice
         for (int i = 0; i < items.tagCount(); i++) {
             NBTTagCompound itemTag = items.getCompoundTagAt(i);
             int slot = itemTag.getByte("Slot") & 255;
-            if (slot >= 0 && slot < SLOT_COUNT) {
+            if (slot >= 0 && slot < SLOT_COUNT)
                 inventory[slot] = ItemStack.loadItemStackFromNBT(itemTag);
-            }
         }
     }
 
@@ -463,9 +442,8 @@ public class TileFastCrafter extends TileNetworkDevice
 
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
-        if (slot < 0 || slot >= SLOT_COUNT || inventory[slot] == null || amount <= 0) {
+        if (slot < 0 || slot >= SLOT_COUNT || inventory[slot] == null || amount <= 0)
             return null;
-        }
 
         ItemStack stack = inventory[slot];
         ItemStack result;
@@ -475,23 +453,20 @@ public class TileFastCrafter extends TileNetworkDevice
             result = stack;
         } else {
             result = stack.splitStack(amount);
-            if (stack.stackSize == 0) {
+            if (stack.stackSize == 0)
                 inventory[slot] = null;
-            }
         }
 
         markDirty();
-        if (isPatternSlot(slot)) {
+        if (isPatternSlot(slot))
             notifyPatternChange();
-        }
         return result;
     }
 
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
-        if (slot < 0 || slot >= SLOT_COUNT) {
+        if (slot < 0 || slot >= SLOT_COUNT)
             return null;
-        }
 
         ItemStack stack = inventory[slot];
         inventory[slot] = null;
@@ -500,19 +475,16 @@ public class TileFastCrafter extends TileNetworkDevice
 
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack) {
-        if (slot < 0 || slot >= SLOT_COUNT) {
+        if (slot < 0 || slot >= SLOT_COUNT)
             return;
-        }
 
         inventory[slot] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+        if (stack != null && stack.stackSize > getInventoryStackLimit())
             stack.stackSize = getInventoryStackLimit();
-        }
 
         markDirty();
-        if (isPatternSlot(slot)) {
+        if (isPatternSlot(slot))
             notifyPatternChange();
-        }
     }
 
     @Override
@@ -539,18 +511,15 @@ public class TileFastCrafter extends TileNetworkDevice
     }
 
     @Override
-    public void openInventory() {
-    }
+    public void openInventory() { }
 
     @Override
-    public void closeInventory() {
-    }
+    public void closeInventory() { }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
-        if (isPatternSlot(slot)) {
+        if (isPatternSlot(slot))
             return isPatternStack(stack);
-        }
 
         return isImportSlot(slot);
     }
@@ -560,9 +529,8 @@ public class TileFastCrafter extends TileNetworkDevice
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
         MachineSideMode mode = getSideMode(side);
-        if (mode == MachineSideMode.NONE) {
+        if (mode == MachineSideMode.NONE)
             return new int[0];
-        }
 
         int count = 0;
         int[] slots = new int[SLOT_COUNT];
