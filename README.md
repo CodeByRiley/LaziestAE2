@@ -6,7 +6,11 @@ Textures in assets/ are licensed by E. Geng (2020) under assets/LICENSE.
 A Minecraft **1.7.10** backport of [Lazy AE2](https://github.com/phantamanta44/Lazy-AE2) by phantamanta44,
 which targets 1.12.2. <br> Adds machines that automate the tedious parts of Applied Energistics 2.
 
-Requires **Applied Energistics 2** (rv3 for 1.7.10). NEI, MineTweaker and WDMla are optional.
+Requires **Applied Energistics 2** rv3, or GTNH's [AE2 Unofficial](https://github.com/GTNewHorizons/Applied-Energistics-2-Unofficial) fork.
+### Supported (Optional) mods
+- NEI
+- MineTweaker
+- WDMla/Waila
 
 
 ## Machines
@@ -23,6 +27,13 @@ Requires **Applied Energistics 2** (rv3 for 1.7.10). NEI, MineTweaker and WDMla 
 
 The four processing machines accept AE2 **acceleration cards** (up to 8), trading energy for speed,
 and have per-face IO configuration plus an auto-export toggle.
+
+Every machine except the chamber has **redstone control**: always active, active with a signal,
+active without one, or never. A disabled machine keeps its progress rather than restarting, and
+the two crafting providers report themselves busy so the network sends jobs elsewhere.
+
+These controls live in the configuration tab hanging off the side of each GUI. Hover the gear to
+peek at it, click to pin it open, and drag it to move the tab to another edge.
 
 ### Mass Assembly Chamber
 
@@ -85,6 +96,12 @@ mods.laziestae2.Energizer.addRecipe(<output>, <input>, 12000);
 ```
 
 Every machine also has a `removeRecipe(IIngredient)` method.
+
+## Security
+
+Machines connected to a network with an **ME Security Terminal** obey it: opening a GUI, or
+changing face IO, auto-export or redstone mode, requires `BUILD` rights. A network without a
+security terminal is unrestricted, as is a machine that is not attached to one.
 
 ## Configuration
 
