@@ -72,7 +72,7 @@ dependencies {
         transitive = false
     }
 
-    // Minecraft 1.7.10 uses NEI for recipe display; JEI is for later ports.
+    // Minecraft 1.7.10 uses NEI for recipe display
     implementation("codechicken:CodeChickenLib:${project.minecraft_version}-${project.codechickenlib_version}:dev") {
         transitive = false
     }
@@ -83,7 +83,6 @@ dependencies {
         transitive = false
     }
 
-    // Optional at runtime: only the ZenScript integration classes touch it.
     compileOnly("MineTweaker3:MineTweaker3-API:${project.minetweaker_version}") {
         transitive = false
     }

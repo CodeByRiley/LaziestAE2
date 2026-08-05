@@ -5,7 +5,7 @@
   "description": "A Minecraft 1.7.10 backport of Lazy AE2. Adds seven machines that automate the tedious parts of Applied Energistics 2",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "https://github.com/phantamanta44/Lazy-AE2",
+  "url": "https://github.com/CodeByRiley/LaziestAE2",
   "updateUrl": "",
   "authorList": ["codebyriley", "phantamanta44"],
   "credits": "Original Lazy AE2 and textures by phantamanta44. Optional NEI and MineTweaker integration.",
