@@ -120,6 +120,7 @@ public final class MassAssemblerStructure {
         private void addPart(MassAssemblerPartType type, int x, int y, int z) {
             partCount++;
             partPositions.add(new int[] { x, y, z });
+            craftingCoprocessorCount += type.getCoprocessorUnits();
 
             switch (type) {
                 case FRAME:
@@ -137,9 +138,6 @@ public final class MassAssemblerStructure {
                 case PATTERN_PROVIDER:
                     patternProviderCount++;
                     patternProviderPositions.add(new int[] { x, y, z });
-                    break;
-                case CRAFTING_COPROCESSOR:
-                    craftingCoprocessorCount++;
                     break;
                 case IO_PORT:
                     ioPortCount++;

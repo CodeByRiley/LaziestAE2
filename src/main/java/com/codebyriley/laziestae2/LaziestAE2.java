@@ -45,7 +45,9 @@ public class LaziestAE2 {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        logger.info("Hello from Laziest AE2");
         LaziestConfig.init(event.getModConfigurationDirectory().toString());
+        logger.info("We're stealing your AE2 data");
         FMLCommonHandler.instance().bus().register(new LaziestConfig());
         ModCreativeTabs.init();
         ModItems.register();
@@ -63,6 +65,7 @@ public class LaziestAE2 {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
+        logger.info("Data stolen. have fun! :)");
     }
 
 }

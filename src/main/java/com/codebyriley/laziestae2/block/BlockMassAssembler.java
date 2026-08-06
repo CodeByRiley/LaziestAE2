@@ -8,6 +8,10 @@ import com.codebyriley.laziestae2.inventory.InventoryDropHelper;
 import com.codebyriley.laziestae2.tile.massassembler.MassAssemblerStructure;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerController;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerCraftingCoprocessor;
+import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerCraftingCoprocessor16;
+import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerCraftingCoprocessor256;
+import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerCraftingCoprocessor4;
+import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerCraftingCoprocessor64;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerFrame;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerIoPort;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerPart;
@@ -35,16 +39,43 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
     public static final int VENT = 1;
     public static final int CONTROLLER = 2;
     public static final int PATTERN_PROVIDER = 3;
-    public static final int CRAFTING_COPROCESSOR = 4;
     public static final int IO_PORT = 5;
+    public static final int CRAFTING_COPROCESSOR = 4;
+    public static final int CRAFTING_COPROCESSOR_4 = 6;
+    public static final int CRAFTING_COPROCESSOR_16 = 7;
+    public static final int CRAFTING_COPROCESSOR_64 = 8;
+    public static final int CRAFTING_COPROCESSOR_256 = 9;
 
+    // Indexed by metadata, so entries may only ever be appended — existing worlds
+    // store the index. Block metadata is 4 bits, capping this at 16 variants.
     private static final String[] VARIANTS = {
             "frame",
             "vent",
             "controller",
             "module_pattern",
             "module_cpu",
-            "io_port"
+            "io_port",
+            "module_cpu_4",
+            "module_cpu_16",
+            "module_cpu_64",
+            "module_cpu_256"
+    };
+
+    // Texture path per variant, relative to textures/blocks/big_assembler. Kept
+    // separate from VARIANTS because a variant name also builds the lang key,
+    // which must not contain a directory separator. Each entry needs a matching
+    // "<path>_active" sprite.
+    private static final String[] TEXTURES = {
+            "frame",
+            "vent",
+            "controller",
+            "module_pattern",
+            "cpu/1x",
+            "io_port",
+            "cpu/4x",
+            "cpu/16x",
+            "cpu/64x",
+            "cpu/256x"
     };
 
     @SideOnly(Side.CLIENT)
@@ -142,6 +173,14 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
                 return new TileMassAssemblerPatternProvider();
             case CRAFTING_COPROCESSOR:
                 return new TileMassAssemblerCraftingCoprocessor();
+            case CRAFTING_COPROCESSOR_4:
+                return new TileMassAssemblerCraftingCoprocessor4();
+            case CRAFTING_COPROCESSOR_16:
+                return new TileMassAssemblerCraftingCoprocessor16();
+            case CRAFTING_COPROCESSOR_64:
+                return new TileMassAssemblerCraftingCoprocessor64();
+            case CRAFTING_COPROCESSOR_256:
+                return new TileMassAssemblerCraftingCoprocessor256();
             case IO_PORT:
                 return new TileMassAssemblerIoPort();
             default:
@@ -186,12 +225,12 @@ public class BlockMassAssembler extends Block implements IMetadataBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister register) {
-        icons = new IIcon[VARIANTS.length];
-        activeIcons = new IIcon[VARIANTS.length];
+        icons = new IIcon[TEXTURES.length];
+        activeIcons = new IIcon[TEXTURES.length];
 
-        for (int i = 0; i < VARIANTS.length; i++) {
-            icons[i] = register.registerIcon(Constants.MOD_ID + ":big_assembler/" + VARIANTS[i]);
-            activeIcons[i] = register.registerIcon(Constants.MOD_ID + ":big_assembler/" + VARIANTS[i] + "_active");
+        for (int i = 0; i < TEXTURES.length; i++) {
+            icons[i] = register.registerIcon(Constants.MOD_ID + ":big_assembler/" + TEXTURES[i]);
+            activeIcons[i] = register.registerIcon(Constants.MOD_ID + ":big_assembler/" + TEXTURES[i] + "_active");
         }
     }
 

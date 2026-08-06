@@ -10,7 +10,9 @@ import appeng.api.features.InscriberProcessType;
 import appeng.api.util.AEColor;
 import com.codebyriley.laziestae2.LaziestAE2;
 import com.codebyriley.laziestae2.block.BlockMachine;
+import com.codebyriley.laziestae2.block.AcceleratorTiles;
 import com.codebyriley.laziestae2.block.BlockMassAssembler;
+import com.codebyriley.laziestae2.integration.ae2.Ae2Fork;
 import com.codebyriley.laziestae2.item.ItemLazyMaterial;
 import com.codebyriley.laziestae2.recipe.ProcessingRecipeRegistry;
 import com.google.common.base.Optional;
@@ -38,6 +40,32 @@ public final class ModRecipes {
         registerMaterialRecipes();
         registerMachineRecipes();
         registerMassAssemblerRecipes();
+        registerAcceleratorRecipes();
+    }
+
+    /**
+     * Four of the tier below, shapeless and with no catalyst — the same ladder
+     * GTNH's fork uses, so a pack swapping between the two crafts identically.
+     * Only registered on stock rv3, where the blocks themselves exist.
+     */
+    private static void registerAcceleratorRecipes() {
+        if (ModBlocks.accelerators.isEmpty())
+            return;
+
+        ItemStack previous = Ae2Fork.getCraftingAccelerator(1);
+        if (previous == null) {
+            LaziestAE2.logger.warn("No AE2 crafting accelerator; skipping compressed accelerator recipes");
+            return;
+        }
+
+        for (int tier : AcceleratorTiles.TIERS) {
+            Block block = ModBlocks.accelerators.get(tier);
+            if (block == null)
+                continue;
+
+            addShapeless(new ItemStack(block), previous, previous, previous, previous);
+            previous = new ItemStack(block);
+        }
     }
 
     /**
@@ -206,6 +234,40 @@ public final class ModRecipes {
                 'C', fluixCable,
                 'P', block(blocks.iOPort()),
                 'B', new ItemStack(Blocks.chest));
+
+        registerCoprocessorTierRecipes();
+    }
+
+    /**
+     * Coprocessor tiers follow AE2's storage ladder, quadrupling each step. Each
+     * one fuses four of the tier below with a catalyst, so a 256x costs 256 base
+     * units and every catalyst below it.
+     *
+     * On GTNH's AE2 Unofficial the catalyst is that fork's matching compressed
+     * crafting accelerator, mirroring the base coprocessor's own recipe. Stock
+     * rv3 has no such block, so there we climb our own speculation core ladder.
+     */
+    private static void registerCoprocessorTierRecipes() {
+        addCoprocessorTier(BlockMassAssembler.CRAFTING_COPROCESSOR,
+                BlockMassAssembler.CRAFTING_COPROCESSOR_4, 4, ItemLazyMaterial.SPEC_CORE_4);
+        addCoprocessorTier(BlockMassAssembler.CRAFTING_COPROCESSOR_4,
+                BlockMassAssembler.CRAFTING_COPROCESSOR_16, 16, ItemLazyMaterial.SPEC_CORE_16);
+        addCoprocessorTier(BlockMassAssembler.CRAFTING_COPROCESSOR_16,
+                BlockMassAssembler.CRAFTING_COPROCESSOR_64, 64, ItemLazyMaterial.SPEC_CORE_64);
+
+        // Our core ladder stops at 64, so the top tier falls back to the processor.
+        addCoprocessorTier(BlockMassAssembler.CRAFTING_COPROCESSOR_64,
+                BlockMassAssembler.CRAFTING_COPROCESSOR_256, 256, ItemLazyMaterial.SPECULATIVE_PROCESSOR);
+    }
+
+    private static void addCoprocessorTier(int inputMeta, int outputMeta, int multiplier, int fallbackCoreMeta) {
+        ItemStack accelerator = Ae2Fork.getCraftingAccelerator(multiplier);
+        Object catalyst = accelerator != null ? accelerator : material(fallbackCoreMeta);
+
+        addShaped(massAssembler(outputMeta),
+                new String[] { " c ", "cpc", " c " },
+                'c', massAssembler(inputMeta),
+                'p', catalyst);
     }
 
     /**

@@ -522,6 +522,9 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             frameCount = newFrameCount;
             ventCount = newVentCount;
             patternProviderCount = newPatternProviderCount;
+
+
+
             craftingCoprocessorCount = newCraftingCoprocessorCount;
             ioPortCount = newIoPortCount;
 

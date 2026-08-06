@@ -404,6 +404,15 @@ public class GuiMassAssembler extends GuiContainer {
         return (float)(Math.log1p(cpus) / Math.log1p(maxEffective));
     }
 
+    /**
+     * Whether the structure carries more coprocessors than it can put to work.
+     * A single high tier can pass the ceiling on its own, so the surplus needs
+     * saying out loud rather than being left to a bar that just reads full.
+     */
+    private boolean isCpuSaturated() {
+        return container.getCraftingCoprocessorCount() > getMaxEffectiveCpus();
+    }
+
     private int getMaxEffectiveCpus() {
         int perTickUpgrade = Math.max(1, com.codebyriley.laziestae2.config.LaziestConfig.workPerTickUpgrade);
         int base = Math.max(0, com.codebyriley.laziestae2.config.LaziestConfig.workPerTickBase);
@@ -430,6 +439,11 @@ public class GuiMassAssembler extends GuiContainer {
             List<String> lines = new ArrayList<String>();
             lines.add(format("cpus", container.getCraftingCoprocessorCount()));
             lines.add(format("work_rate", controller.getWorkRate()));
+
+            if (isCpuSaturated())
+                lines.add(net.minecraft.util.EnumChatFormatting.YELLOW
+                        + format("cpus_saturated", getMaxEffectiveCpus()));
+
             func_146283_a(lines, mouseX, mouseY);
         } else if (isOver(mouseX, mouseY, left + 8, top + 6, 60, 10)) {
             // Structure breakdown, moved off the slot grid into a tooltip.

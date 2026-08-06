@@ -7,6 +7,8 @@ A Minecraft **1.7.10** backport of [Lazy AE2](https://github.com/phantamanta44/L
 which targets 1.12.2. <br> Adds machines that automate the tedious parts of Applied Energistics 2.
 
 Requires **Applied Energistics 2** rv3, or GTNH's [AE2 Unofficial](https://github.com/GTNewHorizons/Applied-Energistics-2-Unofficial) fork.
+On stock rv3 the mod fills in the fork's [compressed crafting accelerators](#crafting-co-processing-units);
+on the fork it defers to the ones already there.
 ### Supported (Optional) mods
 - NEI
 - MineTweaker
@@ -42,11 +44,27 @@ exactly one Controller plus at least one Frame, Pattern Provider, Crafting Copro
 Vents are decorative.
 
 Every block carries a grid node, so an ME cable may attach anywhere on the structure; the whole
-cluster counts as a single channel. Throughput scales with coprocessor count, at proportionally
-worse energy efficiency.
+cluster counts as a single channel. Throughput scales with the number of coprocessors, at
+proportionally worse energy efficiency.
+
+Crafting Coprocessors come in five tiers — 1x, 4x, 16x, 64x and 256x — following AE2's own
+storage ladder. Each tier fuses four of the one below with a speculation core, and counts as
+that many coprocessors while taking a single block and a single grid node. The chamber can only
+put so many to work before the queue runs dry; past that point the CPU bar in its GUI says how
+many are actually being used.
 
 It is a crafting *provider*, not a crafting CPU — the network still needs a real Crafting CPU to
 plan jobs.
+
+### Crafting Co-Processing Units
+
+Compressed crafting accelerators for real AE2 crafting CPUs — 4x, 16x, 64x, 256x, 1024x and
+4096x. One block does the work of that many accelerators, sparing the space and the grid nodes.
+Each is four of the tier below on a crafting grid, shapeless.
+
+**These only exist on stock AE2 rv3.** GTNH's fork already ships the same ladder, so the mod
+detects it and stays out of the way rather than adding a second, parallel set. The recipes match
+the fork's, so a pack can move between the two without relearning them.
 
 ### Preemptive Assembly Unit
 
