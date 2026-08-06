@@ -27,10 +27,6 @@ public final class EnergyBuffer {
         return capacity - stored;
     }
 
-    public boolean canExtract(double amount) {
-        return isFiniteAmount(amount) && amount >= 0D && stored >= amount;
-    }
-
     public void setStored(double amount) {
         double clamped = clampToCapacity(amount);
 
@@ -50,18 +46,6 @@ public final class EnergyBuffer {
             setStored(stored + accepted);
 
         return accepted;
-    }
-
-    public double extract(double amount, boolean simulate) {
-        if (!isFiniteAmount(amount) || amount <= 0D)
-            return 0D;
-
-        double extracted = Math.min(amount, stored);
-
-        if (!simulate && extracted > 0D)
-            setStored(stored - extracted);
-
-        return extracted;
     }
 
     public boolean consume(double amount, boolean simulate) {

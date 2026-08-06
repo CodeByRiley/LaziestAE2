@@ -4,11 +4,10 @@ import com.codebyriley.laziestae2.gui.MachineGuiDefinition;
 import com.codebyriley.laziestae2.tile.machines.TileFastCrafter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerFastCrafter extends Container {
+public class ContainerFastCrafter extends ContainerBase {
 
     private final TileFastCrafter tile;
 
@@ -37,19 +36,7 @@ public class ContainerFastCrafter extends Container {
         }
 
         MachineGuiDefinition definition = MachineGuiDefinition.FAST_CRAFTER;
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlotToContainer(new Slot(
-                        playerInventory,
-                        column + row * 9 + 9,
-                        8 + column * 18,
-                        definition.getPlayerInventoryY() + row * 18));
-            }
-        }
-
-        for (int column = 0; column < 9; column++) {
-            addSlotToContainer(new Slot(playerInventory, column, 8 + column * 18, definition.getPlayerHotbarY()));
-        }
+        addPlayerInventory(playerInventory, definition.getPlayerInventoryY(), definition.getPlayerHotbarY());
     }
 
     public TileFastCrafter getTile() {

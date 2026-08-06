@@ -44,8 +44,4 @@ public class OreDictionaryItemStackMatcher implements ItemStackMatcher {
         }
         return stacks;
     }
-
-    public String getOreName() {
-        return oreName;
-    }
 }

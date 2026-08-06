@@ -438,7 +438,6 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         super.writeSyncNBT(tag);
         writeStructureNBT(tag);
         tag.setInteger("AssemblyWork", work);
-        tag.setInteger("JobCount", jobQueue.size());
         writeJobPreviewNBT(tag);
     }
 
@@ -447,7 +446,6 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
         super.readSyncNBT(tag);
         readStructureNBT(tag);
         work = Math.max(0, tag.getInteger("AssemblyWork"));
-        clientJobCount = tag.getInteger("JobCount");
         readJobPreviewNBT(tag);
     }
 
@@ -485,12 +483,6 @@ public class TileMassAssemblerController extends TilePowered implements IMassAss
             if (slot < JOB_INPUT_SLOTS && entry.hasKey("id"))
                 activeJobInputs[slot] = ItemStack.loadItemStackFromNBT(entry);
         }
-    }
-
-    private int clientJobCount;
-
-    public int getJobCountForDisplay() {
-        return worldObj != null && worldObj.isRemote ? clientJobCount : jobQueue.size();
     }
 
     private void applyScanResult(MassAssemblerStructure.ScanResult result) {

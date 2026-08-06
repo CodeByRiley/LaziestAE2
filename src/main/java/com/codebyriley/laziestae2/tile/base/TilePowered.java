@@ -278,10 +278,6 @@ public abstract class TilePowered extends TileEntity implements IActionHost, IRe
         redstoneMode = RedstoneMode.byIndex(tag.getByte("RedstoneMode"));
     }
 
-    public EnergyBuffer getEnergyBuffer() {
-        return energy;
-    }
-
     public double getStoredEnergy() {
         return energy.getStored();
     }

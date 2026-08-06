@@ -6,12 +6,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerMachine extends Container {
+public class ContainerMachine extends ContainerBase {
 
     private static final int ENERGY_SCALE = 10000;
     private static final int PROGRESS_WORK = 0;
@@ -34,7 +33,7 @@ public class ContainerMachine extends Container {
         this.machineSlotCount = definition.getSlotCount();
 
         addMachineSlots();
-        addPlayerInventory(playerInventory);
+        addPlayerInventory(playerInventory, definition.getPlayerInventoryY(), definition.getPlayerHotbarY());
         refreshProgressFromTile();
     }
 
@@ -234,26 +233,6 @@ public class ContainerMachine extends Container {
         @Override
         public int getSlotStackLimit() {
             return TileMachine.MAX_UPGRADES;
-        }
-    }
-
-    private void addPlayerInventory(InventoryPlayer playerInventory) {
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlotToContainer(new Slot(
-                        playerInventory,
-                        column + row * 9 + 9,
-                        8 + column * 18,
-                        definition.getPlayerInventoryY() + row * 18));
-            }
-        }
-
-        for (int column = 0; column < 9; column++) {
-            addSlotToContainer(new Slot(
-                    playerInventory,
-                    column,
-                    8 + column * 18,
-                    definition.getPlayerHotbarY()));
         }
     }
 

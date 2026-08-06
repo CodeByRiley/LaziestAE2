@@ -2,7 +2,7 @@ package com.codebyriley.laziestae2.recipe;
 
 import net.minecraft.item.ItemStack;
 
-public class CentrifugeRecipe {
+public class CentrifugeRecipe implements ProcessingRecipe {
 
     private final ItemStackMatcher input;
     private final ItemStack output;

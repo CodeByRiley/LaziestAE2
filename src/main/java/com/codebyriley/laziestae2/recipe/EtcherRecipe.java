@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
  * Circuit etching recipe. Inputs are positional, mirroring the inscriber-like
  * slot layout: top, bottom, middle.
  */
-public class EtcherRecipe {
+public class EtcherRecipe implements ProcessingRecipe {
 
     public static final int SLOT_TOP = 0;
     public static final int SLOT_BOTTOM = 1;

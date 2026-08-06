@@ -120,8 +120,6 @@ public final class MachineGuiDefinition {
     private int progressY;
     private int progressWidth;
     private int progressHeight;
-    private int progressU = 176;
-    private int progressV;
     private String neiIdentifier;
 
     private MachineGuiDefinition(int guiId, String textureName, String titleKey, String fallbackTitle, int width, int height,
@@ -167,14 +165,6 @@ public final class MachineGuiDefinition {
 
     public int getProgressHeight() {
         return progressHeight;
-    }
-
-    public int getProgressU() {
-        return progressU;
-    }
-
-    public int getProgressV() {
-        return progressV;
     }
 
     /** NEI recipe handler identifier, or null if this machine has no NEI handler. */

@@ -19,6 +19,10 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
 
     // energy.png is 6x72: full-height track at 0,0,4,72, fill strip at
     // 4,0,2,70 drawn bottom-up, inset 1px into the track.
+    // The progress sprite sits to the right of every 176px-wide machine panel.
+    private static final int PROGRESS_U = 176;
+    private static final int PROGRESS_V = 0;
+
     private static final int ENERGY_TEX_WIDTH = 6;
     private static final int ENERGY_TEX_HEIGHT = 72;
     private static final int ENERGY_BAR_X = 165;
@@ -150,8 +154,8 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
             drawTexturedModalRect(
                     left + definition.getProgressX(),
                     top + definition.getProgressY(),
-                    definition.getProgressU(),
-                    definition.getProgressV(),
+                    PROGRESS_U,
+                    PROGRESS_V,
                     filled,
                     definition.getProgressHeight());
         }
@@ -208,9 +212,7 @@ public class GuiMachine extends GuiContainer implements ISideIoGui {
     }
 
     private void playClick() {
-        mc.getSoundHandler().playSound(
-                net.minecraft.client.audio.PositionedSoundRecord.func_147674_a(
-                        new ResourceLocation("gui.button.press"), 1F));
+        GuiSounds.playClick();
     }
 
     private void drawFallbackWorkBar(int left, int top) {

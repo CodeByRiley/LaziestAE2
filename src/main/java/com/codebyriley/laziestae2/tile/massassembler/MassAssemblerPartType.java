@@ -36,10 +36,6 @@ public enum MassAssemblerPartType {
         return weight;
     }
 
-    public boolean isCraftingCoprocessor() {
-        return weight > 0;
-    }
-
     public static MassAssemblerPartType fromMetadata(int metadata) {
         for (MassAssemblerPartType type : values()) {
             if (type.metadata == metadata)

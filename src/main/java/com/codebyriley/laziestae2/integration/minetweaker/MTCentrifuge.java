@@ -33,13 +33,11 @@ public class MTCentrifuge {
 
     @ZenMethod
     public static void removeRecipe(IIngredient output) {
-        for (final ItemStack stack : MTHelper.toStacks(output)) {
-            MineTweakerAPI.apply(new MTAction("Removing centrifuge recipes for " + stack.getDisplayName()) {
-                @Override
-                public void apply() {
-                    ProcessingRecipeRegistry.removeCentrifugeRecipes(stack);
-                }
-            });
-        }
+        MTHelper.removeAll(output, "centrifuge", new MTHelper.Remover() {
+            @Override
+            public void remove(ItemStack stack) {
+                ProcessingRecipeRegistry.removeCentrifugeRecipes(stack);
+            }
+        });
     }
 }

@@ -128,19 +128,11 @@ public class TileLevelMaintainer extends TileNetworkDevice
         if (sleepTicks-- > 0)
             return;
 
-        if (!isRedstoneActive()) {
-            sleepTicks = sleepIncrement;
-            return;
-        }
-
         IGridNode node = getActionableNode();
-        if (node == null || !node.isActive()) {
-            sleepTicks = sleepIncrement;
-            return;
-        }
+        IGrid grid = node == null ? null : node.getGrid();
 
-        IGrid grid = node.getGrid();
-        if (grid == null) {
+        // Nothing to do without redstone, an active node and a grid — sleep on any of them.
+        if (!isRedstoneActive() || node == null || !node.isActive() || grid == null) {
             sleepTicks = sleepIncrement;
             return;
         }

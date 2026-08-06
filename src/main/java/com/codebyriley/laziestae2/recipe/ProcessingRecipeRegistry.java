@@ -46,44 +46,28 @@ public final class ProcessingRecipeRegistry {
 
     /** Removes every aggregator recipe producing the given output. Returns what was removed. */
     public static List<AggregatorRecipe> removeAggregatorRecipes(ItemStack output) {
-        List<AggregatorRecipe> removed = new ArrayList<AggregatorRecipe>();
-
-        for (int i = aggregatorRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(aggregatorRecipes.get(i).getOutput(), output))
-                removed.add(aggregatorRecipes.remove(i));
-        }
-
-        return removed;
+        return removeByOutput(aggregatorRecipes, output);
     }
 
     public static List<CentrifugeRecipe> removeCentrifugeRecipes(ItemStack output) {
-        List<CentrifugeRecipe> removed = new ArrayList<CentrifugeRecipe>();
-
-        for (int i = centrifugeRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(centrifugeRecipes.get(i).getOutput(), output))
-                removed.add(centrifugeRecipes.remove(i));
-        }
-
-        return removed;
+        return removeByOutput(centrifugeRecipes, output);
     }
 
     public static List<EtcherRecipe> removeEtcherRecipes(ItemStack output) {
-        List<EtcherRecipe> removed = new ArrayList<EtcherRecipe>();
-
-        for (int i = etcherRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(etcherRecipes.get(i).getOutput(), output))
-                removed.add(etcherRecipes.remove(i));
-        }
-
-        return removed;
+        return removeByOutput(etcherRecipes, output);
     }
 
     public static List<EnergizerRecipe> removeEnergizerRecipes(ItemStack output) {
-        List<EnergizerRecipe> removed = new ArrayList<EnergizerRecipe>();
+        return removeByOutput(energizerRecipes, output);
+    }
 
-        for (int i = energizerRecipes.size() - 1; i >= 0; i--) {
-            if (matchesOutput(energizerRecipes.get(i).getOutput(), output))
-                removed.add(energizerRecipes.remove(i));
+    /** Iterates backwards so removal does not disturb the indices still to be visited. */
+    private static <T extends ProcessingRecipe> List<T> removeByOutput(List<T> recipes, ItemStack output) {
+        List<T> removed = new ArrayList<T>();
+
+        for (int i = recipes.size() - 1; i >= 0; i--) {
+            if (matchesOutput(recipes.get(i).getOutput(), output))
+                removed.add(recipes.remove(i));
         }
 
         return removed;

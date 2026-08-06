@@ -2,7 +2,7 @@ package com.codebyriley.laziestae2.recipe;
 
 import net.minecraft.item.ItemStack;
 
-public class AggregatorRecipe {
+public class AggregatorRecipe implements ProcessingRecipe {
 
     public static final int INPUT_COUNT = 3;
 

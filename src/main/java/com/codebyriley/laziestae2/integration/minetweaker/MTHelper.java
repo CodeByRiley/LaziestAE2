@@ -3,6 +3,7 @@ package com.codebyriley.laziestae2.integration.minetweaker;
 import com.codebyriley.laziestae2.recipe.ItemStackMatcher;
 import java.util.ArrayList;
 import java.util.List;
+import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IIngredient;
 import minetweaker.api.item.IItemStack;
 import net.minecraft.item.ItemStack;
@@ -31,6 +32,28 @@ public final class MTHelper {
         }
 
         return stacks;
+    }
+
+    /**
+     * Queues one removal action per stack an ingredient expands to. Every machine
+     * removes recipes the same way; only the noun and the registry call differ.
+     */
+    public static void removeAll(IIngredient output, String machineNoun, final Remover remover) {
+        for (final ItemStack stack : toStacks(output)) {
+            MineTweakerAPI.apply(new MTAction("Removing " + machineNoun + " recipes for "
+                    + stack.getDisplayName()) {
+                @Override
+                public void apply() {
+                    remover.remove(stack);
+                }
+            });
+        }
+    }
+
+    /** The one registry call that differs between machines. */
+    public interface Remover {
+
+        void remove(ItemStack output);
     }
 
     public static ItemStackMatcher toMatcher(IIngredient ingredient) {

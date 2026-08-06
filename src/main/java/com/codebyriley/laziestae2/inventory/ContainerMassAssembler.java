@@ -12,11 +12,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 
-public class ContainerMassAssembler extends Container {
+public class ContainerMassAssembler extends ContainerBase {
 
     private static final int ENERGY_SCALE = 10000;
     private static final int PROGRESS_FORMED = 0;
@@ -56,7 +55,10 @@ public class ContainerMassAssembler extends Container {
         this.controller = controller;
 
         addPatternPages();
-        addPlayerInventory(playerInventory);
+        addPlayerInventory(
+                playerInventory,
+                MachineGuiDefinition.BIG_ASSEMBLER.getPlayerInventoryY(),
+                MachineGuiDefinition.BIG_ASSEMBLER.getPlayerHotbarY());
         refreshFromController();
     }
 
@@ -86,6 +88,8 @@ public class ContainerMassAssembler extends Container {
 
             pages.add(page);
         }
+
+        applyPageVisibility();
     }
 
     public int getPageCount() {
@@ -97,8 +101,37 @@ public class ContainerMassAssembler extends Container {
     }
 
     public void setCurrentPage(int page) {
-        if (page >= 0 && page < pages.size())
-            currentPage = page;
+        if (page < 0 || page >= pages.size())
+            return;
+
+        currentPage = page;
+        applyPageVisibility();
+    }
+
+    /**
+     * Parks the slots of every page but the current one off-screen.
+     *
+     * GuiContainer draws every slot in the container unconditionally — it only
+     * consults {@code func_111238_b} to decide whether to highlight the one under
+     * the cursor — so an off-screen position is the only way to hide a page.
+     */
+    private void applyPageVisibility() {
+        for (PatternPage page : pages) {
+            for (SlotPattern slot : page.slots) {
+                slot.setVisible(page.isActive());
+            }
+        }
+    }
+
+    /**
+     * Page changes arrive here from the client over vanilla's button channel.
+     * The server enforces the visible page in {@link #slotClick} and
+     * {@link #transferStackInSlot}, so it has to be told which one that is.
+     */
+    @Override
+    public boolean enchantItem(EntityPlayer player, int page) {
+        setCurrentPage(page);
+        return true;
     }
 
     private boolean isPageActive(int pageIndex) {
@@ -323,11 +356,23 @@ public class ContainerMassAssembler extends Container {
 
     private static class SlotPattern extends Slot {
 
+        /** Far enough off-screen that the slot is never drawn or hit-tested. */
+        private static final int HIDDEN = -10000;
+
         private final PatternPage page;
+        private final int homeX;
+        private final int homeY;
 
         private SlotPattern(IInventory inventory, int index, int x, int y, PatternPage page) {
             super(inventory, index, x, y);
             this.page = page;
+            this.homeX = x;
+            this.homeY = y;
+        }
+
+        private void setVisible(boolean visible) {
+            xDisplayPosition = visible ? homeX : HIDDEN;
+            yDisplayPosition = visible ? homeY : HIDDEN;
         }
 
         @Override
@@ -349,28 +394,6 @@ public class ContainerMassAssembler extends Container {
         @Override
         public boolean func_111238_b() {
             return page.isActive();
-        }
-    }
-
-    private void addPlayerInventory(InventoryPlayer playerInventory) {
-        MachineGuiDefinition definition = MachineGuiDefinition.BIG_ASSEMBLER;
-
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlotToContainer(new Slot(
-                        playerInventory,
-                        column + row * 9 + 9,
-                        8 + column * 18,
-                        definition.getPlayerInventoryY() + row * 18));
-            }
-        }
-
-        for (int column = 0; column < 9; column++) {
-            addSlotToContainer(new Slot(
-                    playerInventory,
-                    column,
-                    8 + column * 18,
-                    definition.getPlayerHotbarY()));
         }
     }
 

@@ -255,15 +255,6 @@ public class SideIoFlyout extends Gui {
 
     /** Tooltip lines for whatever the cursor is over, or null. */
     public List<String> getTooltip(int mouseX, int mouseY, int guiLeft, int guiTop) {
-//        if (!isOpen()) {
-//            if (isOverTab(mouseX, mouseY, guiLeft, guiTop)) {
-//                return Collections.singletonList(
-//                        StatCollector.translateToLocal("gui.laziestae2.side_io.title"));
-//            }
-//
-//            return null;
-//        }
-
         int face = widget.getHoveredFace(mouseX, mouseY, guiLeft, guiTop);
         if (face >= 0)
             return widget.getFaceTooltip(face);

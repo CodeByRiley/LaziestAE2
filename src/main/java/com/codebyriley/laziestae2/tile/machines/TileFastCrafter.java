@@ -79,12 +79,8 @@ public class TileFastCrafter extends TileNetworkDevice
         if (!isRedstoneActive())
             return;
 
-        importIntoNetwork();
-        flushExportBuffer();
-    }
-
-    private void importIntoNetwork() {
         insertRangeIntoNetwork(IMPORT_START);
+        flushExportBuffer();
     }
 
     /** Pushes a buffer's contents into network storage. */

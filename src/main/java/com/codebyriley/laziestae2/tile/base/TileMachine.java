@@ -172,19 +172,6 @@ public abstract class TileMachine extends TilePowered
         return getMaxWork();
     }
 
-    public int getScaledWork(int scale) {
-        int maxWork = getMaxWork();
-        if (scale <= 0 || maxWork <= 0)
-            return 0;
-
-        return Math.min(scale, work * scale / maxWork);
-    }
-
-    public float getWorkFraction() {
-        int maxWork = getMaxWork();
-        return maxWork <= 0 ? 0F : Math.min((float)work / (float)maxWork, 1F);
-    }
-
     public boolean isWorking() {
         return working;
     }

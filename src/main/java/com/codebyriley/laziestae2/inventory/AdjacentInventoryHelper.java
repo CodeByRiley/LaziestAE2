@@ -11,52 +11,6 @@ public final class AdjacentInventoryHelper {
 
     private AdjacentInventoryHelper() { }
 
-    /**
-     * Tries to insert the stack into inventories adjacent to the given position.
-     * Returns the remainder, or null if everything was inserted.
-     */
-    public static ItemStack insertIntoAdjacent(World world, int x, int y, int z, ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0)
-            return null;
-
-        ItemStack remaining = stack;
-
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            TileEntity tile = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-            if (!(tile instanceof IInventory))
-                continue;
-
-            remaining = insert((IInventory)tile, remaining, dir.getOpposite());
-            if (remaining == null)
-                return null;
-        }
-
-        return remaining;
-    }
-
-    /**
-     * Simulates insertion into all adjacent inventories. Returns true if the whole
-     * stack would fit.
-     */
-    public static boolean canInsertIntoAdjacent(World world, int x, int y, int z, ItemStack stack) {
-        if (stack == null || stack.stackSize <= 0)
-            return true;
-
-        int remaining = stack.stackSize;
-
-        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
-            TileEntity tile = world.getTileEntity(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-            if (!(tile instanceof IInventory))
-                continue;
-
-            remaining -= simulateInsert((IInventory)tile, stack, remaining, dir.getOpposite());
-            if (remaining <= 0)
-                return true;
-        }
-
-        return false;
-    }
-
     /** Inserts into the inventory on one specific face. Returns the remainder, or null. */
     public static ItemStack insertIntoSide(World world, int x, int y, int z, int side, ItemStack stack) {
         if (world == null || stack == null || stack.stackSize <= 0)

@@ -51,10 +51,6 @@ public class BlockCompressedAccelerator extends BlockCraftingUnit {
         setCreativeTab(ModCreativeTabs.tab);
     }
 
-    public int getCoProcessors() {
-        return coProcessors;
-    }
-
     /** Metadata is AE2's state, not a variant, so a broken block always drops the plain item. */
     @Override
     public int damageDropped(int metadata) {

@@ -2,7 +2,7 @@ package com.codebyriley.laziestae2.recipe;
 
 import net.minecraft.item.ItemStack;
 
-public class EnergizerRecipe {
+public class EnergizerRecipe implements ProcessingRecipe {
 
     private final ItemStackMatcher input;
     private final int energyRequired;

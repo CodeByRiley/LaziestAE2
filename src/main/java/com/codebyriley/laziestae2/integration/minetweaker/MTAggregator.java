@@ -35,13 +35,11 @@ public class MTAggregator {
 
     @ZenMethod
     public static void removeRecipe(IIngredient output) {
-        for (final ItemStack stack : MTHelper.toStacks(output)) {
-            MineTweakerAPI.apply(new MTAction("Removing aggregator recipes for " + stack.getDisplayName()) {
-                @Override
-                public void apply() {
-                    ProcessingRecipeRegistry.removeAggregatorRecipes(stack);
-                }
-            });
-        }
+        MTHelper.removeAll(output, "aggregator", new MTHelper.Remover() {
+            @Override
+            public void remove(ItemStack stack) {
+                ProcessingRecipeRegistry.removeAggregatorRecipes(stack);
+            }
+        });
     }
 }

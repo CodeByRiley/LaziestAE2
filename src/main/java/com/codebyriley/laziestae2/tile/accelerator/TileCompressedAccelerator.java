@@ -22,10 +22,6 @@ public abstract class TileCompressedAccelerator extends TileCraftingTile {
         this.coProcessors = coProcessors;
     }
 
-    public int getCoProcessors() {
-        return coProcessors;
-    }
-
     /** Metadata says otherwise — bits 0-1 are AE2's type field, which we do not use. */
     @Override
     public boolean isAccelerator() {

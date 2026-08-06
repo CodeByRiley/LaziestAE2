@@ -61,13 +61,11 @@ public class MTEtcher {
 
     @ZenMethod
     public static void removeRecipe(IIngredient output) {
-        for (final ItemStack stack : MTHelper.toStacks(output)) {
-            MineTweakerAPI.apply(new MTAction("Removing etcher recipes for " + stack.getDisplayName()) {
-                @Override
-                public void apply() {
-                    ProcessingRecipeRegistry.removeEtcherRecipes(stack);
-                }
-            });
-        }
+        MTHelper.removeAll(output, "etcher", new MTHelper.Remover() {
+            @Override
+            public void remove(ItemStack stack) {
+                ProcessingRecipeRegistry.removeEtcherRecipes(stack);
+            }
+        });
     }
 }

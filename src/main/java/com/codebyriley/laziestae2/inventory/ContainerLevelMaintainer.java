@@ -4,11 +4,10 @@ import com.codebyriley.laziestae2.gui.MachineGuiDefinition;
 import com.codebyriley.laziestae2.tile.machines.TileLevelMaintainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerLevelMaintainer extends Container {
+public class ContainerLevelMaintainer extends ContainerBase {
 
     public static final int SLOT_X = 17;
     public static final int SLOT_Y_BASE = 19;
@@ -24,19 +23,7 @@ public class ContainerLevelMaintainer extends Container {
         }
 
         MachineGuiDefinition definition = MachineGuiDefinition.LEVEL_MAINTAINER;
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlotToContainer(new Slot(
-                        playerInventory,
-                        column + row * 9 + 9,
-                        8 + column * 18,
-                        definition.getPlayerInventoryY() + row * 18));
-            }
-        }
-
-        for (int column = 0; column < 9; column++) {
-            addSlotToContainer(new Slot(playerInventory, column, 8 + column * 18, definition.getPlayerHotbarY()));
-        }
+        addPlayerInventory(playerInventory, definition.getPlayerInventoryY(), definition.getPlayerHotbarY());
     }
 
     public TileLevelMaintainer getTile() {

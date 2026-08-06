@@ -38,13 +38,11 @@ public class MTEnergizer {
 
     @ZenMethod
     public static void removeRecipe(IIngredient output) {
-        for (final ItemStack stack : MTHelper.toStacks(output)) {
-            MineTweakerAPI.apply(new MTAction("Removing energizer recipes for " + stack.getDisplayName()) {
-                @Override
-                public void apply() {
-                    ProcessingRecipeRegistry.removeEnergizerRecipes(stack);
-                }
-            });
-        }
+        MTHelper.removeAll(output, "energizer", new MTHelper.Remover() {
+            @Override
+            public void remove(ItemStack stack) {
+                ProcessingRecipeRegistry.removeEnergizerRecipes(stack);
+            }
+        });
     }
 }

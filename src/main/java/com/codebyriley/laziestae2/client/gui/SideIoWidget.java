@@ -75,32 +75,19 @@ public class SideIoWidget extends Gui {
     private int   mouseX = Integer.MIN_VALUE;
     private int   mouseY = Integer.MIN_VALUE;
 
-    public SideIoWidget(ISideConfigurable tile) {
-        this(tile,
-             PAD_X,
-             PAD_Y,
-             AUTO_EXPORT_X,
-             AUTO_EXPORT_Y
-        );
-    }
-
     /**
-     * Positions are relative to the GUI origin and may sit outside the panel,
-     * which is how the machine GUIs hang these as tabs off the right edge.
+     * Starting positions only. The flyout lays the controls out every frame, so
+     * these are overwritten before anything is drawn.
      */
-    public SideIoWidget(ISideConfigurable tile, int padX, int padY, int exportX, int exportY) {
+    public SideIoWidget(ISideConfigurable tile) {
         this.tile    = tile;
-        this.padX    = padX;
-        this.padY    = padY;
-        this.exportX = exportX;
-        this.exportY = exportY;
+        this.padX    = PAD_X;
+        this.padY    = PAD_Y;
+        this.exportX = AUTO_EXPORT_X;
+        this.exportY = AUTO_EXPORT_Y;
     }
 
-    /** Lets a container reposition the controls each frame, e.g. while animating. */
-    public void setPosition(int padX, int padY, int exportX, int exportY) {
-        setPosition(padX, padY, exportX, exportY, exportX, exportY);
-    }
-
+    /** Lets the flyout reposition the controls each frame, e.g. while animating. */
     public void setPosition(int padX, int padY, int exportX, int exportY, int redstoneX, int redstoneY) {
         this.padX      = padX;
         this.padY      = padY;

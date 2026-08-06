@@ -348,10 +348,8 @@ public class GuiMassAssembler extends GuiContainer {
             }
 
             if (navButton >= 0 && target != page && target >= 0 && target <= lastPage) {
-                container.setCurrentPage(target);
-                mc.getSoundHandler().playSound(
-                        net.minecraft.client.audio.PositionedSoundRecord.func_147674_a(
-                                new net.minecraft.util.ResourceLocation("gui.button.press"), 1F));
+                changePage(target);
+                GuiSounds.playClick();
                 return;
             }
 
@@ -476,9 +474,21 @@ public class GuiMassAssembler extends GuiContainer {
             return;
 
         if (scroll < 0)
-            container.setCurrentPage(container.getCurrentPage() + 1);
+            changePage(container.getCurrentPage() + 1);
         else
-            container.setCurrentPage(container.getCurrentPage() - 1);
+            changePage(container.getCurrentPage() - 1);
+    }
+
+    /**
+     * The server enforces which page accepts clicks, so it is told about the
+     * change over vanilla's button channel rather than only turning the page here.
+     */
+    private void changePage(int target) {
+        if (target < 0 || target >= container.getPageCount() || target == container.getCurrentPage())
+            return;
+
+        container.setCurrentPage(target);
+        mc.playerController.sendEnchantPacket(container.windowId, target);
     }
 
     private static String format(String key, int value) {

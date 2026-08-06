@@ -3,11 +3,10 @@ package com.codebyriley.laziestae2.inventory;
 import com.codebyriley.laziestae2.tile.massassembler.TileMassAssemblerPatternProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class ContainerPatternProvider extends Container {
+public class ContainerPatternProvider extends ContainerBase {
 
     public static final int ROWS = 4;
     public static final int COLUMNS = 9;
@@ -24,19 +23,7 @@ public class ContainerPatternProvider extends Container {
         }
 
         int playerInventoryY = 18 + ROWS * 18 + 13;
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlotToContainer(new Slot(
-                        playerInventory,
-                        column + row * 9 + 9,
-                        8 + column * 18,
-                        playerInventoryY + row * 18));
-            }
-        }
-
-        for (int column = 0; column < 9; column++) {
-            addSlotToContainer(new Slot(playerInventory, column, 8 + column * 18, playerInventoryY + 58));
-        }
+        addPlayerInventory(playerInventory, playerInventoryY, playerInventoryY + 58);
     }
 
     public TileMassAssemblerPatternProvider getTile() {

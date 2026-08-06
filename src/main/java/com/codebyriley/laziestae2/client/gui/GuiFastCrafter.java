@@ -48,9 +48,7 @@ public class GuiFastCrafter extends GuiContainer implements ISideIoGui {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int button) {
         if (sideIo.handleClick(mouseX, mouseY, button, guiLeft, guiTop)) {
-            mc.getSoundHandler().playSound(
-                    net.minecraft.client.audio.PositionedSoundRecord.func_147674_a(
-                            new net.minecraft.util.ResourceLocation("gui.button.press"), 1F));
+            GuiSounds.playClick();
             return;
         }
 
